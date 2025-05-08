@@ -1,0 +1,11 @@
+{
+  "$type": "PlayerData, Assembly-CSharp",
+  "data": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[StageData, Assembly-CSharp]], mscorlib",
+    "0": {
+      "$type": "StageData, Assembly-CSharp",
+      "point": 0,
+      "time": 0.0
+    }
+  }
+}
