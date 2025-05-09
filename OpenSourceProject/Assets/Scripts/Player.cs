@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class Player : MonoBehaviour
 {
@@ -8,24 +9,42 @@ public class Player : MonoBehaviour
 
     //Moving
     private Vector2 moveDirection;
-    public float moveSpeed;
+    [SerializeField]
+    private float moveSpeed;
 
     //Looking
     private Vector2 mouseScreenPos;
     private Camera mainCam;
 
+    //HP
+    [SerializeField]
+    private int currentHP;
+    private int maxHP = 10;
+
+    //is Damaged
+
+
+
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        //Looking
         mainCam = Camera.main;
+
+        //Change Color
         spriteRd = GetComponent<SpriteRenderer>();
+
+        //HP
+        currentHP = maxHP;
     }
+
 
     void Update()
     {
         //Moving
         rb.linearVelocity = moveDirection * moveSpeed;
-
 
         //Looking
         Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
@@ -38,6 +57,7 @@ public class Player : MonoBehaviour
             //rb.rotation = angle; // z축 기준 회전
         }
     }
+
 
     /// <summary>
     /// player : wsad Moving
@@ -81,6 +101,32 @@ public class Player : MonoBehaviour
             Debug.Log("좌클릭!");
             spriteRd.color = Color.black;
         }
+    }
+
+    // 총알 피격
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("BULLET"))
+        {
+            Debug.Log("총알 충돌했다!");
+            currentHP -= 1; //총알 데미지 관련 수정 가능성 O
+
+            StartCoroutine(Invincible());
+        }
+    }
+    
+    // 무적 시간
+    IEnumerator Invincible()
+    {
+        GetComponent<CapsuleCollider2D>().enabled = false;
+        spriteRd.color = new Color(spriteRd.color.r, spriteRd.color.g, spriteRd.color.b,
+                                   0.5f);
+
+        yield return new WaitForSeconds(1f);
+
+        GetComponent<CapsuleCollider2D>().enabled = true;
+        spriteRd.color = new Color(spriteRd.color.r, spriteRd.color.g, spriteRd.color.b,
+                                   1f);
     }
 
 }
