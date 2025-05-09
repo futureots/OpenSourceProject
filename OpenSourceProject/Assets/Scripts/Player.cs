@@ -21,9 +21,10 @@ public class Player : MonoBehaviour
     private int currentHP;
     private int maxHP = 10;
 
-    //is Damaged
-
-
+    //Die
+    public delegate void PlayerDieHandler(); //type
+    public static event PlayerDieHandler OnPlayerDie; //event
+    private bool isDie = false;
 
 
     private void Awake()
@@ -58,7 +59,7 @@ public class Player : MonoBehaviour
         }
     }
 
-
+    //------ PLAYER CONTROL ------
     /// <summary>
     /// player : wsad Moving
     /// </summary>
@@ -103,19 +104,26 @@ public class Player : MonoBehaviour
         }
     }
 
-    // 총알 피격
+
+    //------ PLAYER DAMAGED ------
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("BULLET"))
         {
-            Debug.Log("총알 충돌했다!");
-            currentHP -= 1; //총알 데미지 관련 수정 가능성 O
+            Debug.Log("OMG Bullet!!");
+            currentHP -= 1; //TMP!
 
-            StartCoroutine(Invincible());
+
+            if (currentHP <= 0 && !isDie)
+            {
+                PlayerDie();
+                isDie = true;
+            }
+            else if (!isDie)
+                StartCoroutine(Invincible());
         }
     }
-    
-    // 무적 시간
+
     IEnumerator Invincible()
     {
         GetComponent<CapsuleCollider2D>().enabled = false;
@@ -129,4 +137,16 @@ public class Player : MonoBehaviour
                                    1f);
     }
 
+
+    //------ PLAYER DIE ------
+    private void PlayerDie()
+    {
+        Debug.Log("OMG Die!!");
+        spriteRd.color = Color.red; //TMP!
+
+        GetComponent<PlayerInput>().enabled = false;
+
+        OnPlayerDie?.Invoke();
+        //OnPlayerDie();
+    }
 }
