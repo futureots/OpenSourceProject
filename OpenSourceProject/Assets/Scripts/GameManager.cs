@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class GameManager : Singleton<GameManager>
 {
@@ -31,6 +32,11 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public float time { get; private set; }
 
+    /// <summary>
+    /// 스테이지 종료 시 실행
+    /// </summary>
+    public UnityEvent OnStageEnd;
+
     private void Start()
     {
         point = 0;
@@ -49,7 +55,7 @@ public class GameManager : Singleton<GameManager>
        if(delay <= 0) delay = 1f;
         while (true)
         {
-            var randEnemy = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
+            var randEnemy = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Count)];
             var enemyInstance = Instantiate(randEnemy);
 
             // enemyinstance DOTween으로 위치 이동
@@ -99,9 +105,10 @@ public class GameManager : Singleton<GameManager>
     public void GameEnd()
     {
         Debug.Log("GameEnd");
+        StopAllCoroutines();
 
-        //TODO : UI 점수 표시 및 시간 표시, 레벨화면 이동 버튼
-
+        //UI에서 이 이벤트에 스테이지 종료 UI 표시 설정
+        OnStageEnd?.Invoke();
 
         SaveStageData();
 
