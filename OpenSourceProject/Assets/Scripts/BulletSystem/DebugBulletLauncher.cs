@@ -8,7 +8,7 @@ public class DebugBulletLauncher : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            BulletManager.Instance.LaunchBullet(color, transform.position, 10f, 5f, Vector2.up);
+            BulletManager.LaunchBullet(color, transform.position, 10f, 5f, Vector2.up);
         }    
     }
 }
