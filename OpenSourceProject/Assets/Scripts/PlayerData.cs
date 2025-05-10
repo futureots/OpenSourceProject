@@ -59,6 +59,8 @@ public struct StageData
         point = _point;
         time = _time;
     }
+    [JsonProperty("stage_point", DefaultValueHandling = DefaultValueHandling.Ignore)]
     public int point;
+    [JsonProperty("stage_time", DefaultValueHandling = DefaultValueHandling.Ignore)]
     public float time;
 }

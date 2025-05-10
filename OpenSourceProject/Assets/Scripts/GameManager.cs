@@ -35,18 +35,18 @@ public class GameManager : Singleton<GameManager>
     {
         point = 0;
         time = 0;
-        SpawnEnemy(5f);
-        SaveStageData();
+        StartCoroutine(SpawnEnemy(5f));
+
     }
     private void Update()
     {
         time += Time.deltaTime;
-
     }
 
-    /// 일정 시간마다 적을 스폰하는 코루틴
+    // 일정 시간마다 적을 스폰하는 코루틴
     IEnumerator SpawnEnemy(float delay)
     {
+       if(delay <= 0) delay = 1f;
         while (true)
         {
             var randEnemy = enemyPrefabs[Random.Range(0, enemyPrefabs.Count)];
@@ -54,6 +54,7 @@ public class GameManager : Singleton<GameManager>
 
             // enemyinstance DOTween으로 위치 이동
 
+            Debug.Log("SpawnEnemy");
             yield return new WaitForSeconds(delay);
         }
     }
@@ -74,6 +75,9 @@ public class GameManager : Singleton<GameManager>
         
     }
 
+    /// <summary>
+    /// 현재 스테이지 정보(스테이지 레벨, 점수, 시간) 저장
+    /// </summary>
     public void SaveStageData()
     {
         StageData stageData = new StageData(point, time);
@@ -89,6 +93,19 @@ public class GameManager : Singleton<GameManager>
         data.SavePlayerData("Data");
     }
 
-    
+    /// <summary>
+    /// 스테이지 종료 함수(플레이어 사망 시 호출)
+    /// </summary>
+    public void GameEnd()
+    {
+        Debug.Log("GameEnd");
+
+        //TODO : UI 점수 표시 및 시간 표시, 레벨화면 이동 버튼
+
+
+        SaveStageData();
+
+        PauseTime(true);
+    }
 }
 
