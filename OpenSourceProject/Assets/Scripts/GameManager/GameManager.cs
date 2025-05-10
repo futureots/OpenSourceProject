@@ -41,8 +41,9 @@ public class GameManager : Singleton<GameManager>
     {
         point = 0;
         time = 0;
+        Player.OnPlayerDie += GameEnd;
         StartCoroutine(SpawnEnemy(5f));
-
+        
     }
     private void Update()
     {
