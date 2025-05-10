@@ -21,6 +21,6 @@ namespace BulletSystem
         /// </summary>
         /// <param name="color">충돌한 총알의 색입니다.</param>
         /// <returns>true - 총알과 충돌하고 Hit 함수가 호출됩니다. false - 총알이 무시하고 지나갑니다.</returns>
-        public bool IsHitAble(BulletColor color);
+        public bool CheckHitAble(BulletColor color);
     }
 }

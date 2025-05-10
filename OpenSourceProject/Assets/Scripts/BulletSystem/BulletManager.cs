@@ -102,16 +102,18 @@ namespace BulletSystem
         /// <param name="speed"></param>
         /// <param name="damage"></param>
         /// <param name="direction"></param>
-        public void LaunchBullet(BulletColor color, Vector3 position, float speed, float damage, Vector2 direction)
+        public static void LaunchBullet(BulletColor color, Vector3 position, float speed, float damage, Vector2 direction)
         {
+            var bulletManager = Instance;
+
             Bullet bullet;
-            if (bulletPool.CountActive >= maximumBulletCount)
+            if (bulletManager.bulletPool.CountActive >= bulletManager.maximumBulletCount)
             {
-                bullet = CreateBullet();
+                bullet = bulletManager.CreateBullet();
             }
             else
             {
-                bullet = bulletPool.Get();
+                bullet = bulletManager.bulletPool.Get();
             }
 
             // 총알을 발사합니다.

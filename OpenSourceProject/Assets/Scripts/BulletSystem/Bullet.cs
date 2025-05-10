@@ -119,7 +119,7 @@ namespace BulletSystem
         {
             if (other.gameObject.TryGetComponent<IBulletHitAble>(out var hitAble))
             {
-                if (!hitAble.IsHitAble(bulletColor))
+                if (!hitAble.CheckHitAble(bulletColor))
                 {
                     return;
                 }

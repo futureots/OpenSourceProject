@@ -11,7 +11,7 @@ public class DebugBulletHit : MonoBehaviour, IBulletHitAble
         Debug.Log($"Hit! Damage: {damage} | Bullet: {bullet.name}");
     }
 
-    public bool IsHitAble(BulletColor color)
+    public bool CheckHitAble(BulletColor color)
     {
         if (isHitSameColor)
         {
