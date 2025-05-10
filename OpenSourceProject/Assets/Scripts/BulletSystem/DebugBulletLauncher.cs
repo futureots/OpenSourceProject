@@ -3,11 +3,12 @@ using UnityEngine;
 
 public class DebugBulletLauncher : MonoBehaviour
 {
+    public BulletColor color;
     private void Update() 
     {
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            BulletManager.Instance.LaunchBullet(transform.position, 10f, 5f, Vector2.up);
+            BulletManager.Instance.LaunchBullet(color, transform.position, 10f, 5f, Vector2.up);
         }    
     }
 }

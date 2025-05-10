@@ -5,6 +5,11 @@ using UnityEngine.Pool;
 
 namespace BulletSystem
 {
+    public enum BulletColor
+    {
+        White, Black
+    }
+
     public class BulletManager : MonoBehaviour
     {
         #region Singleton
@@ -23,6 +28,11 @@ namespace BulletSystem
             }
         }
         #endregion
+
+        /// <summary>
+        /// 총알의 색상입니다.
+        /// </summary>
+
 
         #region Variables
         /// <summary>
@@ -53,10 +63,10 @@ namespace BulletSystem
         private void Start()
         {
             bulletPool = new ObjectPool<Bullet>(
-                createFunc: CreateBullet, 
-                actionOnDestroy: OnDestroyBullet, 
-                collectionCheck: false, 
-                defaultCapacity: preLoadedBulletCount, 
+                createFunc: CreateBullet,
+                actionOnDestroy: OnDestroyBullet,
+                collectionCheck: false,
+                defaultCapacity: preLoadedBulletCount,
                 maxSize: maximumBulletCount
                 );
         }
@@ -92,7 +102,7 @@ namespace BulletSystem
         /// <param name="speed"></param>
         /// <param name="damage"></param>
         /// <param name="direction"></param>
-        public void LaunchBullet(Vector3 position, float speed, float damage, Vector2 direction)
+        public void LaunchBullet(BulletColor color, Vector3 position, float speed, float damage, Vector2 direction)
         {
             Bullet bullet;
             if (bulletPool.CountActive >= maximumBulletCount)
@@ -105,7 +115,7 @@ namespace BulletSystem
             }
 
             // 총알을 발사합니다.
-            bullet.Launch(position, speed, damage, direction);
+            bullet.Launch(color, position, speed, damage, direction);
         }
 
         #endregion

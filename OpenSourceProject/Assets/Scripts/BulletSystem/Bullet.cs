@@ -12,12 +12,12 @@ namespace BulletSystem
         /// <summary>
         /// 총알의 속도
         /// </summary>
-        public float currentSpeed;
+        public float bulletSpeed;
 
         /// <summary>
         /// 총알과 충돌 시 입는 피해량
         /// </summary>
-        public float currentDamage;
+        public float bulletDamage;
 
         /// <summary>
         /// 총알이 날아가는 방향
@@ -30,11 +30,24 @@ namespace BulletSystem
         public bool isMoving = false;
 
         /// <summary>
+        /// 총알의 색상입니다.
+        /// </summary>
+        public BulletColor bulletColor;
+
+
+        [Header("Bullet Properties")]
+
+        /// <summary>
         /// Animator의 Hit 트리거 이름입니다.
         /// 애니메이터에 별도의 트리거를 사용한다면 이 값을 바꿔야합니다.
         /// </summary>
         public string animatorTriggerName = "Hit";
         private int animatorTriggerHash;
+
+        /// <summary>
+        /// 총알의 자동 회전과 스프라이트와의 회전을 보정하기 위한 값입니다.
+        /// </summary>
+        public float rotateCorrection = 180f;
 
         // 내부 컴포넌트 변수
         private Animator animator;
@@ -66,14 +79,15 @@ namespace BulletSystem
         /// <param name="speed">총알의 속도</param>
         /// <param name="damage">총알과 충돌 시 받을 데미지</param>
         /// <param name="direction">총알이 발사될 방향 (자동으로 회전)</param>
-        public void Launch(Vector3 position, float speed, float damage, Vector2 direction)
+        public void Launch(BulletColor color, Vector3 position, float speed, float damage, Vector2 direction)
         {
             gameObject.SetActive(true);
 
             transform.position = position;
-            currentSpeed = speed;
-            currentDamage = damage;
+            bulletSpeed = speed;
+            bulletDamage = damage;
             launchDirection = direction.normalized;
+            bulletColor = color;
 
             // 회전하기
             float angle = Mathf.Atan2(launchDirection.y, launchDirection.x) * Mathf.Rad2Deg;
@@ -97,7 +111,7 @@ namespace BulletSystem
         /// </summary>
         protected virtual void Move()
         {
-            transform.Translate(currentSpeed * Time.deltaTime * launchDirection, Space.World);
+            transform.Translate(bulletSpeed * Time.deltaTime * launchDirection, Space.World);
         }
 
         // 총알이 특정한 사물과 충돌하면 사라지며 만약 충돌한 객체가 IBulletHitAble 인터페이스를 구현했다면 Hit 함수를 호출합니다.
@@ -105,7 +119,11 @@ namespace BulletSystem
         {
             if (other.gameObject.TryGetComponent<IBulletHitAble>(out var hitAble))
             {
-                hitAble.Hit(currentDamage, this);
+                if (!hitAble.IsHitAble(bulletColor))
+                {
+                    return;
+                }
+                hitAble.Hit(bulletDamage, this);
             }
 
             isMoving = false;
