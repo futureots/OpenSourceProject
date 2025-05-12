@@ -14,6 +14,7 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public List<GameObject> enemyPrefabs;
 
+    public Player player;
     /// <summary>
     /// ÇöÀç È¹µæÇÑ Á¡¼ö
     /// </summary>

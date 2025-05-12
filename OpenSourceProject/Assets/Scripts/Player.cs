@@ -18,8 +18,8 @@ public class Player : MonoBehaviour
 
     //HP
     [SerializeField]
-    private int currentHP;
-    private int maxHP = 10;
+    public int currentHP { get; private set; }
+    public int maxHP { get; private set; } = 10;
 
     //Die
     public delegate void PlayerDieHandler(); //type
