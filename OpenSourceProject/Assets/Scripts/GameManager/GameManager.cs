@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+using static UnityEditor.PlayerSettings;
+
 public class GameManager : Singleton<GameManager>
 {
     /// <summary>
@@ -59,7 +61,25 @@ public class GameManager : Singleton<GameManager>
             var randEnemy = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Count)];
             var enemyInstance = Instantiate(randEnemy);
 
+            Vector2 worldPos;
+            float radius = 1f;
+            while (true)
+            {
+                Vector2 pos = new Vector2(Random.Range(0, Screen.width), Random.Range(0, Screen.height));
+                //Debug.Log(pos);
+                worldPos = Camera.main.ScreenToWorldPoint(pos);
+                //Debug.Log(worldPos);
+                var colls = Physics2D.OverlapCircleAll(worldPos, radius);
+                //Debug.Log(colls.Length);
+                if (colls.Length == 0) break;
+                // 무한 루프 방지
+                yield return new WaitForSeconds(0.1f);
+                radius *= 0.9f;
+            }
+
             // enemyinstance DOTween으로 위치 이동
+            enemyInstance.transform.position = worldPos;
+            
 
             Debug.Log("SpawnEnemy");
             yield return new WaitForSeconds(delay);
