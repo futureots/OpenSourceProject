@@ -17,9 +17,8 @@ public class Player : MonoBehaviour
     private Camera mainCam;
 
     //HP
-    [SerializeField]
-    private int currentHP;
-    private int maxHP = 10;
+    public int currentHP;
+    public int maxHP = 3;
 
     //Die
     public delegate void PlayerDieHandler(); //type

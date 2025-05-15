@@ -16,6 +16,7 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public List<GameObject> enemyPrefabs;
 
+    public Player player;
     /// <summary>
     /// ÇöÀç È¹µæÇÑ Á¡¼ö
     /// </summary>
@@ -58,7 +59,9 @@ public class GameManager : Singleton<GameManager>
        if(delay <= 0) delay = 1f;
         while (true)
         {
+            if (enemyPrefabs.Count <= 0) yield break;
             var randEnemy = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Count)];
+            
             var enemyInstance = Instantiate(randEnemy);
 
             Vector2 worldPos;
