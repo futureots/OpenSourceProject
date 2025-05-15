@@ -2,16 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Singleton<T> : MonoBehaviour where T : MonoBehaviour                     //ÀÌ ½ºÅ©¸³Æ® »ó¼ÓÇÏ¸é ½Ì±ÛÅæ »ý¼º ¿Ï·á
+public class Singleton<T> : MonoBehaviour where T : MonoBehaviour                     //ï¿½ï¿½ ï¿½ï¿½Å©ï¿½ï¿½Æ® ï¿½ï¿½ï¿½ï¿½Ï¸ï¿½ ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Ï·ï¿½
 {
     private static T instance=null;
-    public static T Instance                                                                                           //instanceÀÇ °ªÀÌ ¼Õ»óµÇÁö ¾Ê°Ô
+    public static T Instance                                                                                           //instanceï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½Õ»ï¿½ï¿½ï¿½ï¿½ ï¿½Ê°ï¿½
     {
         get
         {
             if (instance == null)
             {
-                instance = (T)FindObjectOfType(typeof(T));
+                instance = (T)FindFirstObjectByType(typeof(T));
                 if(instance == null)
                 {
                     GameObject obj = new GameObject(typeof(T).Name, typeof(T));
@@ -24,7 +24,7 @@ public class Singleton<T> : MonoBehaviour where T : MonoBehaviour               
     }
     private void Awake()
     {
-        /*if(transform.parent !=null || transform.root != null)                                                             //½Ì±ÛÅæ ¿ÀºêÁ§Æ®°¡ ÆÄ±«µÇÁö ¾Êµµ·Ï Ã³¸®
+        /*if(transform.parent !=null || transform.root != null)                                                             //ï¿½Ì±ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®ï¿½ï¿½ ï¿½Ä±ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Êµï¿½ï¿½ï¿½ Ã³ï¿½ï¿½
         {
             DontDestroyOnLoad(this.transform.root.gameObject);
         }
