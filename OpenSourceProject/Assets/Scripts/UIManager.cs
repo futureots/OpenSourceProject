@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
 {
     public TextMeshProUGUI pointPanel;
     public TextMeshProUGUI timePanel;
-    public Image hpPanel;
+    public GameObject hpPanel;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -21,7 +21,28 @@ public class UIManager : MonoBehaviour
 
         pointPanel.text = "Point : " + GameManager.Instance.point.ToString();
 
+        ShowHpPanel();
+        
+    }
+
+    void ShowHpPanel()
+    {
         Player player = GameManager.Instance.player;
-        hpPanel.fillAmount = player.currentHP / player.maxHP;
+        var maxHp = player.maxHP > hpPanel.transform.childCount ? hpPanel.transform.childCount : player.maxHP;
+        var i = player.currentHP;
+        i = Mathf.Clamp(i, 0, maxHp);
+
+        for(int j = 0; j < hpPanel.transform.childCount; j++)
+        {
+            if(j< i)
+            {
+                hpPanel.transform.GetChild(j).gameObject.SetActive(true);
+            }
+            else
+            {
+                hpPanel.transform.GetChild(j).gameObject.SetActive(false);
+            }
+            
+        }
     }
 }
