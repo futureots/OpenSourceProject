@@ -53,6 +53,7 @@ namespace BulletSystem
         private Animator animator;
         private SpriteRenderer spriteRenderer;
         private Collider2D myCollider2D;
+        private Camera mainCam;
     
         #endregion
 
@@ -67,6 +68,8 @@ namespace BulletSystem
             myCollider2D = GetComponent<Collider2D>();
             animator = GetComponent<Animator>();
             myCollider2D.isTrigger = true;
+
+            mainCam = Camera.main;
 
             animatorTriggerHash = Animator.StringToHash(animatorTriggerName);
             return this;
@@ -112,6 +115,15 @@ namespace BulletSystem
         protected virtual void Move()
         {
             transform.Translate(bulletSpeed * Time.deltaTime * launchDirection, Space.World);
+
+            // 화면 밖이면 비활성화
+            Vector3 screenPos = mainCam.WorldToScreenPoint(transform.position);
+            if (screenPos.x < 0 || screenPos.x > Screen.width || screenPos.y < 0 || screenPos.y > Screen.height)
+            {
+                isMoving = false;
+                myCollider2D.enabled = false;
+                BulletManager.Instance.ReleaseBullet(this);
+            }
         }
 
         // 총알이 특정한 사물과 충돌하면 사라지며 만약 충돌한 객체가 IBulletHitAble 인터페이스를 구현했다면 Hit 함수를 호출합니다.
