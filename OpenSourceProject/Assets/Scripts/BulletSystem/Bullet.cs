@@ -129,12 +129,18 @@ namespace BulletSystem
                 isMoving = false;
                 myCollider2D.enabled = false;
                 BulletManager.Instance.ReleaseBullet(this);
+                gameObject.SetActive(false);
             }
         }
 
         // 총알이 특정한 사물과 충돌하면 사라지며 만약 충돌한 객체가 IBulletHitAble 인터페이스를 구현했다면 Hit 함수를 호출합니다.
         private void OnTriggerEnter2D(Collider2D other)
         {
+            if (other.CompareTag("BULLET"))
+            {
+                return;
+            }
+
             if (other.gameObject.TryGetComponent<IBulletHitAble>(out var hitAble))
             {
                 if (!hitAble.CheckHitAble(bulletColor, this))

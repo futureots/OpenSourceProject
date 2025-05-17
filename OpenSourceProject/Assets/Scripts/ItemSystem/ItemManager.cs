@@ -56,7 +56,7 @@ namespace ItemSystem
             {
                 case 0:
                     // 예시: 플레이어의 체력을 회복하는 아이템
-                    player.currentHP += 1;
+                    player.ChangeHp(1);
                     break;
             }
 

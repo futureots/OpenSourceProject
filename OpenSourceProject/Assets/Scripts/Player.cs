@@ -1,8 +1,9 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
+using BulletSystem;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IBulletHitAble
 {
     private Rigidbody2D rb;
     private SpriteRenderer spriteRd;
@@ -17,8 +18,33 @@ public class Player : MonoBehaviour
     private Camera mainCam;
 
     //HP
+    [Header("Player Status")]
     public int currentHP;
     public int maxHP = 3;
+
+    // Bullet
+
+    /// <summary>
+    /// 현재 총알의 색상입니다.
+    /// </summary>
+    public BulletColor playerColor = BulletColor.White;
+
+    /// <summary>
+    /// 발사하는 총알의 속도입니다.
+    /// </summary>
+    public float bulletSpeed = 8f;
+
+    /// <summary>
+    /// 발사하는 총알의 피해량입니다.
+    /// </summary>
+    public float bulletDamage = 1f;
+
+    /// <summary>
+    /// 총알을 발사하는 간격입니다.
+    /// </summary>
+    public float bulletCooldown = 0.5f;
+    private float bulletCooldownTimer = 0f;
+
 
     //Die
     public delegate void PlayerDieHandler(); //type
@@ -56,6 +82,23 @@ public class Player : MonoBehaviour
             //float angle = Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg;
             //rb.rotation = angle; // z축 기준 회전
         }
+
+        if (bulletCooldownTimer > 0)
+        {
+            bulletCooldownTimer -= Time.deltaTime;
+        }
+        else
+        {
+            BulletManager.LaunchBullet(
+                color: playerColor,
+                position: transform.position,
+                speed: bulletSpeed,
+                damage: bulletDamage,
+                direction: dirVec.normalized,
+                source: gameObject);
+
+            bulletCooldownTimer = bulletCooldown;
+        }
     }
 
     //------ PLAYER CONTROL ------
@@ -87,6 +130,7 @@ public class Player : MonoBehaviour
         {
             Debug.Log("좌클릭!");
             spriteRd.color = Color.white;
+            playerColor = BulletColor.White;
         }
     }
     
@@ -100,26 +144,55 @@ public class Player : MonoBehaviour
         {
             Debug.Log("좌클릭!");
             spriteRd.color = Color.black;
+            playerColor = BulletColor.Black;
         }
     }
 
-
-    //------ PLAYER DAMAGED ------
-    private void OnCollisionEnter2D(Collision2D collision)
+    public void ChangeHp(int hp)
     {
-        if (collision.gameObject.CompareTag("BULLET"))
+        currentHP += hp;
+        if (currentHP > maxHP)
+            currentHP = maxHP;
+        else if (currentHP <= 0 && !isDie)
         {
-            Debug.Log("OMG Bullet!!");
-            currentHP -= 1; //TMP!
+            PlayerDie();
+            isDie = true;
+        }
+    }
 
+    // ----- PLAYER HIT ------
+    public void Hit(float damage, Bullet bullet)
+    {
+        Debug.Log("Hit!!");
 
-            if (currentHP <= 0 && !isDie)
-            {
-                PlayerDie();
-                isDie = true;
-            }
-            else if (!isDie)
-                StartCoroutine(Invincible());
+        // 플레이어는 총알의 데미지와 관계없이 항상 1데미지만 받음
+        ChangeHp(-1);
+
+        if (!isDie)
+        {
+            // 플레이어가 맞았을 때 무적 상태로 전환
+            StartCoroutine(Invincible());
+        }
+
+    }
+
+    public bool CheckHitAble(BulletColor color, Bullet bullet)
+    {
+        if (bullet.bulletLaunchSource == gameObject)
+        {
+            // 발사한 총알은 무시
+            return false;
+        }
+
+        if (color == playerColor)
+        {
+            // 같은 색깔의 총알은 맞음
+            return true;
+        }
+        else
+        {
+            // 다른 색깔의 총알은 무시
+            return false;
         }
     }
 
@@ -148,4 +221,5 @@ public class Player : MonoBehaviour
         OnPlayerDie?.Invoke();
         //OnPlayerDie();
     }
+
 }
