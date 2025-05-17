@@ -113,7 +113,7 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     private void FireTowardPlayer()
     {
         Vector2 dir = (GameManager.Instance.player.transform.position - transform.position).normalized;
-        BulletManager.LaunchBullet(enemyColor, transform.position, bulletSpeed, bulletDamage, dir);
+        BulletManager.LaunchBullet(enemyColor, transform.position, bulletSpeed, bulletDamage, dir, gameObject);
     }
 
     // 지정 개수만큼 360도 방사형 공격을 수행합니다.
@@ -123,7 +123,7 @@ public class Enemy : MonoBehaviour, IBulletHitAble
         {
             float angle = 2f * Mathf.PI / count * i;
             Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
-            BulletManager.LaunchBullet(enemyColor, transform.position, bulletSpeed, bulletDamage, dir);
+            BulletManager.LaunchBullet(enemyColor, transform.position, bulletSpeed, bulletDamage, dir, gameObject);
         }
     }
 
@@ -133,7 +133,7 @@ public class Enemy : MonoBehaviour, IBulletHitAble
         for (int i = 0; i < burstCount; i++)
         {
             Vector2 dir = (GameManager.Instance.player.transform.position - transform.position).normalized;
-            BulletManager.LaunchBullet(enemyColor, transform.position, bulletSpeed, bulletDamage, dir);
+            BulletManager.LaunchBullet(enemyColor, transform.position, bulletSpeed, bulletDamage, dir, gameObject);
             yield return new WaitForSeconds(burstInterval);
         }
     }
@@ -147,7 +147,7 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     /// </summary>
     /// <param name="color">충돌한 총알 색상</param>
     /// <returns>같은 색일 경우 true를 반환합니다.</returns>
-    public bool CheckHitAble(BulletColor color)
+    public bool CheckHitAble(BulletColor color, Bullet bullet)
     {
         return color == enemyColor;
     }

@@ -34,6 +34,11 @@ namespace BulletSystem
         /// </summary>
         public BulletColor bulletColor;
 
+        /// <summary>
+        /// 총알을 발사한 오브젝트입니다.
+        /// </summary>
+        public GameObject bulletLaunchSource;
+
 
         [Header("Bullet Properties")]
 
@@ -82,7 +87,7 @@ namespace BulletSystem
         /// <param name="speed">총알의 속도</param>
         /// <param name="damage">총알과 충돌 시 받을 데미지</param>
         /// <param name="direction">총알이 발사될 방향 (자동으로 회전)</param>
-        public void Launch(BulletColor color, Vector3 position, float speed, float damage, Vector2 direction)
+        public void Launch(BulletColor color, Vector3 position, float speed, float damage, Vector2 direction, GameObject source)
         {
             gameObject.SetActive(true);
 
@@ -91,6 +96,7 @@ namespace BulletSystem
             bulletDamage = damage;
             launchDirection = direction.normalized;
             bulletColor = color;
+            bulletLaunchSource = source;
 
             // 회전하기
             float angle = Mathf.Atan2(launchDirection.y, launchDirection.x) * Mathf.Rad2Deg;
@@ -131,7 +137,7 @@ namespace BulletSystem
         {
             if (other.gameObject.TryGetComponent<IBulletHitAble>(out var hitAble))
             {
-                if (!hitAble.CheckHitAble(bulletColor))
+                if (!hitAble.CheckHitAble(bulletColor, this))
                 {
                     return;
                 }
