@@ -20,7 +20,8 @@ namespace BulletSystem
         /// <para>만약 false를 반환할 경우 총알은 사라지지 않고 해당 오브젝트를 지나갑니다.</para>
         /// </summary>
         /// <param name="color">충돌한 총알의 색입니다.</param>
+        /// <param name="bullet">충돌한 총알입니다. 추가 판정 필요시 사용</param>
         /// <returns>true - 총알과 충돌하고 Hit 함수가 호출됩니다. false - 총알이 무시하고 지나갑니다.</returns>
-        public bool CheckHitAble(BulletColor color);
+        public bool CheckHitAble(BulletColor color, Bullet bullet);
     }
 }
