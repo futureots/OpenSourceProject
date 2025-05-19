@@ -6,7 +6,8 @@ using BulletSystem;
 public class Player : MonoBehaviour, IBulletHitAble
 {
     private Rigidbody2D rb;
-    private SpriteRenderer spriteRd;
+    //private SpriteRenderer spriteRd;
+    PlayerColorConverter spriteRenderer;
 
     //Moving
     private Vector2 moveDirection;
@@ -16,6 +17,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     //Looking
     private Vector2 mouseScreenPos;
     private Camera mainCam;
+    private PlayerAnimator animator;
 
     //HP
     [Header("Player Status")]
@@ -23,7 +25,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     public int maxHP = 3;
 
     // Bullet
-
+    
     /// <summary>
     /// 현재 총알의 색상입니다.
     /// </summary>
@@ -45,7 +47,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     public float bulletCooldown = 0.5f;
     private float bulletCooldownTimer = 0f;
 
-
+    public GameObject explosionEffect;
     //Die
     public delegate void PlayerDieHandler(); //type
     public static event PlayerDieHandler OnPlayerDie; //event
@@ -58,9 +60,11 @@ public class Player : MonoBehaviour, IBulletHitAble
 
         //Looking
         mainCam = Camera.main;
+        animator = GetComponentInChildren<PlayerAnimator>();
 
         //Change Color
-        spriteRd = GetComponent<SpriteRenderer>();
+        //spriteRd = GetComponent<SpriteRenderer>();
+        spriteRenderer = GetComponentInChildren<PlayerColorConverter>();
 
         //HP
         currentHP = maxHP;
@@ -78,7 +82,20 @@ public class Player : MonoBehaviour, IBulletHitAble
 
         if (dirVec != Vector2.zero)
         {
-            transform.up = dirVec.normalized;
+            // 플레이어 스프라이트 조작
+            float slope = dirVec.y / dirVec.x;
+            if (slope > -1 && slope < 1)
+            {
+                if(dirVec.x > 0) animator.SetPlayerSprite(PlayerAnimator.Direction.Right);
+                else animator.SetPlayerSprite(PlayerAnimator.Direction.Left);
+            }
+            else
+            {
+                if (dirVec.y > 0) animator.SetPlayerSprite(PlayerAnimator.Direction.Up);
+                else animator.SetPlayerSprite(PlayerAnimator.Direction.Down);
+            }
+            
+            //transform.up = dirVec.normalized;
             //float angle = Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg;
             //rb.rotation = angle; // z축 기준 회전
         }
@@ -129,7 +146,8 @@ public class Player : MonoBehaviour, IBulletHitAble
         if (context.started)
         {
             Debug.Log("좌클릭!");
-            spriteRd.color = Color.white;
+            //spriteRd.color = Color.white;
+            spriteRenderer.SetColor(BulletColor.White);
             playerColor = BulletColor.White;
         }
     }
@@ -142,8 +160,9 @@ public class Player : MonoBehaviour, IBulletHitAble
     {
         if (context.started)
         {
-            Debug.Log("좌클릭!");
-            spriteRd.color = Color.black;
+            Debug.Log("우클릭!");
+            //spriteRd.color = Color.black;
+            spriteRenderer.SetColor(BulletColor.Black);
             playerColor = BulletColor.Black;
         }
     }
@@ -167,7 +186,8 @@ public class Player : MonoBehaviour, IBulletHitAble
 
         // 플레이어는 총알의 데미지와 관계없이 항상 1데미지만 받음
         ChangeHp(-1);
-
+        var effect = Instantiate(explosionEffect,transform.position, Quaternion.identity);
+        Destroy(effect,0.5f);
         if (!isDie)
         {
             // 플레이어가 맞았을 때 무적 상태로 전환
@@ -199,14 +219,11 @@ public class Player : MonoBehaviour, IBulletHitAble
     IEnumerator Invincible()
     {
         GetComponent<CapsuleCollider2D>().enabled = false;
-        spriteRd.color = new Color(spriteRd.color.r, spriteRd.color.g, spriteRd.color.b,
-                                   0.5f);
-
-        yield return new WaitForSeconds(1f);
+        
+        // 무적 이펙트
+        yield return StartCoroutine(spriteRenderer.Invincible());
 
         GetComponent<CapsuleCollider2D>().enabled = true;
-        spriteRd.color = new Color(spriteRd.color.r, spriteRd.color.g, spriteRd.color.b,
-                                   1f);
     }
 
 
@@ -214,7 +231,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     private void PlayerDie()
     {
         Debug.Log("OMG Die!!");
-        spriteRd.color = Color.red; //TMP!
+        //spriteRd.color = Color.red; //TMP!
 
         GetComponent<PlayerInput>().enabled = false;
 
