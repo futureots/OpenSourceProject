@@ -10,6 +10,7 @@ public class BtnHandler : MonoBehaviour
     {
         GoLevelScene,
         GoMainScene,
+        GoBattleScene,
         Exit
     }
 
@@ -30,6 +31,11 @@ public class BtnHandler : MonoBehaviour
             case BtnType.GoMainScene:
                 Debug.Log("MainTestScene 전환");
                 SceneManager.LoadScene("MainTestScene");
+                break;
+
+            case BtnType.GoBattleScene:
+                Debug.Log("AssetTestScene 전환");
+                SceneManager.LoadScene("AssetTestScene");
                 break;
 
             case BtnType.Exit:
