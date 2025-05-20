@@ -114,8 +114,18 @@ namespace BulletSystem
                 bullet = Instance.bulletPool.Get();
             }
 
-            // 총알을 발사합니다.
-            bullet.Launch(color, position, speed, damage, direction, source);
+            if (source.CompareTag("ENEMY"))
+            {
+                Debug.Log("Enemy");
+                bullet.gameObject.layer = 6;
+            }
+            else if (source.CompareTag("Player"))
+            {
+                Debug.Log("Player");
+                bullet.gameObject.layer = 7;
+            }
+                // 총알을 발사합니다.
+                bullet.Launch(color, position, speed, damage, direction, source);
         }
 
         #endregion

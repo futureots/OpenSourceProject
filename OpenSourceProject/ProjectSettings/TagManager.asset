@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - BULLET
+  - ENEMY
   layers:
   - Default
   - TransparentFX
@@ -12,8 +13,8 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
+  - PlayerHit
+  - EnemyHit
   - 
   - 
   - 
@@ -48,11 +49,11 @@ TagManager:
   - name: Player
     uniqueID: 3645325137
     locked: 0
-  - name: Bullet
-    uniqueID: 468369285
-    locked: 0
   - name: Enemy
     uniqueID: 2276792811
+    locked: 0
+  - name: Bullet
+    uniqueID: 468369285
     locked: 0
   m_RenderingLayers:
   - Default
