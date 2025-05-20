@@ -2,11 +2,11 @@ using BulletSystem;
 using System.Collections;
 using UnityEngine;
 
-public class PlayerColorConverter : MonoBehaviour
+public class ColorConverter : MonoBehaviour
 {
     public Sprite Black;
     public Sprite White;
-    new SpriteRenderer renderer;
+    public new SpriteRenderer renderer;
     
 
     private void Start()
@@ -21,7 +21,6 @@ public class PlayerColorConverter : MonoBehaviour
         switch (color)
         {
             case BulletColor.White:
-
                 renderer.sprite = White;
                 break;
             case BulletColor.Black:

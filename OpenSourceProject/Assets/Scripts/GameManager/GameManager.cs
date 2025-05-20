@@ -1,3 +1,4 @@
+using BulletSystem;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -62,13 +63,13 @@ public class GameManager : Singleton<GameManager>
             if (enemyPrefabs.Count <= 0) yield break;
             var randEnemy = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Count)];
             
-            var enemyInstance = Instantiate(randEnemy);
+            
 
             Vector2 worldPos;
             float radius = 1f;
             while (true)
             {
-                Vector2 pos = new Vector2(Random.Range(0, Screen.width), Random.Range(0, Screen.height));
+                Vector2 pos = new Vector2(Random.Range(100, Screen.width-100), Random.Range(100, Screen.height-100));
                 //Debug.Log(pos);
                 worldPos = Camera.main.ScreenToWorldPoint(pos);
                 //Debug.Log(worldPos);
@@ -79,11 +80,34 @@ public class GameManager : Singleton<GameManager>
                 yield return new WaitForSeconds(0.1f);
                 radius *= 0.9f;
             }
+            var enemyInstance = Instantiate(randEnemy, worldPos, Quaternion.identity);
 
-            // enemyinstance DOTween으로 위치 이동
-            enemyInstance.transform.position = worldPos;
+            // 엔티티 랜덤 설정
+            var enemy = enemyInstance.GetComponent<Enemy>();
+            int hp = Random.Range(1, 10);
+            int rate = Random.Range(1, 3);
+            float speed = Random.Range(1, 8f);
+            BulletColor color = Random.Range(0,2) == 0 ? BulletColor.Black : BulletColor.White;
+            var mode = Random.Range(0, 3);
+            switch (mode)
+            {
+                case 0:
+                    enemy.Init(hp,rate,speed,color);
+                    break;
+                case 1:
+                    int rad = Random.Range(4,12);
+                    enemy.Init(hp, rate, speed, color, rad);
+                    break;
+                case 2:
+                    int count = Random.Range(3, 5);
+                    float inter = 0.5f/rate;
+                    enemy.Init(hp, rate, speed, color,count, inter);
+                    break;
+                default:
+                    break;
+            }
             
-
+            
             Debug.Log("SpawnEnemy");
             yield return new WaitForSeconds(delay);
         }

@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 901014578473026548}
   - component: {fileID: 8850002335954713343}
+  - component: {fileID: 7023865263008250575}
   m_Layer: 7
-  m_Name: GameObject
+  m_Name: Shield
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -87,6 +88,21 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &7023865263008250575
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2293136754367289127}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dd1d65c8a749a349bc5e0931a48f083, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Black: {fileID: 21300000, guid: 3320bc4a868201f4aa3895c523fcdebf, type: 3}
+  White: {fileID: 21300000, guid: d9f0c523cc024974fb5620d309b3bb54, type: 3}
+  renderer: {fileID: 8850002335954713343}
 --- !u!1 &4793330579934425581
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,6 +247,8 @@ MonoBehaviour:
   fireRate: 1
   bulletSpeed: 10
   bulletDamage: 1
+  bulletRadial: 8
   burstCount: 3
   burstInterval: 0.1
   scoreValue: 10
+  explosionEffect: {fileID: 609406308895504931, guid: 0cf323a9572c404e8967837546721593, type: 3}

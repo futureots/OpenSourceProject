@@ -116,12 +116,12 @@ namespace BulletSystem
 
             if (source.CompareTag("ENEMY"))
             {
-                Debug.Log("Enemy");
+                //Debug.Log("Enemy");
                 bullet.gameObject.layer = 6;
             }
             else if (source.CompareTag("Player"))
             {
-                Debug.Log("Player");
+                //Debug.Log("Player");
                 bullet.gameObject.layer = 7;
             }
                 // 총알을 발사합니다.

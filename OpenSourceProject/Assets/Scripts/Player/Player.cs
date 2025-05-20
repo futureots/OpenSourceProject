@@ -7,7 +7,7 @@ public class Player : MonoBehaviour, IBulletHitAble
 {
     private Rigidbody2D rb;
     //private SpriteRenderer spriteRd;
-    PlayerColorConverter spriteRenderer;
+    ColorConverter spriteRenderer;
 
     //Moving
     private Vector2 moveDirection;
@@ -44,7 +44,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     /// <summary>
     /// 총알을 발사하는 간격입니다.
     /// </summary>
-    public float bulletCooldown = 0.5f;
+    public float bulletCooldown = 0.1f;
     private float bulletCooldownTimer = 0f;
 
     public GameObject explosionEffect;
@@ -64,7 +64,7 @@ public class Player : MonoBehaviour, IBulletHitAble
 
         //Change Color
         //spriteRd = GetComponent<SpriteRenderer>();
-        spriteRenderer = GetComponentInChildren<PlayerColorConverter>();
+        spriteRenderer = GetComponentInChildren<ColorConverter>();
 
         //HP
         currentHP = maxHP;
@@ -100,11 +100,8 @@ public class Player : MonoBehaviour, IBulletHitAble
             //rb.rotation = angle; // z축 기준 회전
         }
 
-        if (bulletCooldownTimer > 0)
-        {
-            bulletCooldownTimer -= Time.deltaTime;
-        }
-        else
+        bulletCooldownTimer -= Time.deltaTime;
+        if(bulletCooldownTimer <= 0)
         {
             BulletManager.LaunchBullet(
                 color: playerColor,
