@@ -234,6 +234,8 @@ public class Player : MonoBehaviour, IBulletHitAble
 
         OnPlayerDie?.Invoke();
         //OnPlayerDie();
+        gameObject.SetActive(false);
+        
     }
 
 }
