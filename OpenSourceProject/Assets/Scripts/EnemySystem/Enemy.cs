@@ -38,6 +38,10 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     [SerializeField]
     private float bulletDamage = 1f;
 
+    /// <summary>Radial 발사 개수</summary>
+    [SerializeField]
+    private int bulletRadial = 8;
+
     /// <summary>Burst 발사 개수</summary>
     [SerializeField]
     private int burstCount = 3;
@@ -53,6 +57,8 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     /// <summary>적이 살아있는지 여부</summary>
     private bool isAlive = true;
 
+    /// <summary>폭발 이펙트</summary>
+    public GameObject explosionEffect;
     #endregion
 
     #region Unity Methods
@@ -71,6 +77,46 @@ public class Enemy : MonoBehaviour, IBulletHitAble
 
     #region Initialization
 
+    #region Init
+    // 기본 값 설정
+    void Set(int hp, int rate, float speed, BulletColor color)
+    {
+        maxHp = hp;
+        fireRate = rate;
+        bulletSpeed = speed;
+        enemyColor = color;
+    }
+    /// <summary>
+    /// 기본 설정
+    /// </summary>
+    public void Init(int hp, int rate, float speed, BulletColor color)
+    {
+        Set(hp, rate, speed,color);
+        pattern = AttackPatternType.TowardPlayer;
+    }
+    /// <summary>
+    /// 방사형 설정
+    /// </summary>
+    /// <param name="radial">발사 개수</param>
+    public void Init(int hp, int rate, float speed, BulletColor color, int radial)
+    {
+        Set(hp, rate, speed, color);
+        pattern = AttackPatternType.Radial;
+        bulletRadial = radial;
+    }
+    /// <summary>
+    /// 연사 설정
+    /// </summary>
+    /// <param name="count">연사 개수</param>
+    /// <param name="interval">연사 속도</param>
+    public void Init(int hp, int rate, float speed, BulletColor color, int count, float interval)
+    {
+        Set(hp, rate, speed, color);
+        pattern = AttackPatternType.Burst;
+        burstCount = count;
+        burstInterval = interval;
+    }
+    #endregion
     // 체력을 최대치로 초기화합니다.
     private void InitializeHp()
     {
@@ -80,8 +126,9 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     // 스프라이트 색상을 enemyColor에 맞추어 설정합니다.
     private void InitializeColor()
     {
-        SpriteRenderer sr = GetComponent<SpriteRenderer>();
-        sr.color = (enemyColor == BulletColor.White) ? Color.white : Color.black;
+        //SpriteRenderer sr = GetComponent<SpriteRenderer>();
+        var converter = GetComponentInChildren<ColorConverter>();
+        converter.SetColor(enemyColor);
     }
 
     #endregion
@@ -100,7 +147,7 @@ public class Enemy : MonoBehaviour, IBulletHitAble
                     FireTowardPlayer();
                     break;
                 case AttackPatternType.Radial:
-                    FireRadial(8);
+                    FireRadial(bulletRadial);
                     break;
                 case AttackPatternType.Burst:
                     yield return StartCoroutine(FireBurst());
@@ -119,9 +166,10 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     // 지정 개수만큼 360도 방사형 공격을 수행합니다.
     private void FireRadial(int count)
     {
+        int r = Random.Range(0, 360 / count);
         for (int i = 0; i < count; i++)
         {
-            float angle = 2f * Mathf.PI / count * i;
+            float angle = 2f * Mathf.PI / count * i + r;
             Vector2 dir = new Vector2(Mathf.Cos(angle), Mathf.Sin(angle));
             BulletManager.LaunchBullet(enemyColor, transform.position, bulletSpeed, bulletDamage, dir, gameObject);
         }
@@ -192,6 +240,11 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     {
         isAlive = false;
         GameManager.Instance.AddPoint(scoreValue);
+        
+        //사망 이펙트 생성
+        var effect = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        Destroy(effect, 0.5f);
+
         Destroy(gameObject);
     }
 

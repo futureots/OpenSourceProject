@@ -34,28 +34,15 @@ namespace BulletSystem
         /// </summary>
         public BulletColor bulletColor;
 
+        public Sprite whiteColorSprite;
+        public Sprite blackColorSprite;
+
         /// <summary>
         /// 총알을 발사한 오브젝트입니다.
         /// </summary>
         public GameObject bulletLaunchSource;
 
-
-        [Header("Bullet Properties")]
-
-        /// <summary>
-        /// Animator의 Hit 트리거 이름입니다.
-        /// 애니메이터에 별도의 트리거를 사용한다면 이 값을 바꿔야합니다.
-        /// </summary>
-        public string animatorTriggerName = "Hit";
-        private int animatorTriggerHash;
-
-        /// <summary>
-        /// 총알의 자동 회전과 스프라이트와의 회전을 보정하기 위한 값입니다.
-        /// </summary>
-        public float rotateCorrection = 180f;
-
         // 내부 컴포넌트 변수
-        private Animator animator;
         private SpriteRenderer spriteRenderer;
         private Collider2D myCollider2D;
         private Camera mainCam;
@@ -71,12 +58,12 @@ namespace BulletSystem
         {
             spriteRenderer = GetComponent<SpriteRenderer>();
             myCollider2D = GetComponent<Collider2D>();
-            animator = GetComponent<Animator>();
+            // animator = GetComponent<Animator>();
             myCollider2D.isTrigger = true;
 
             mainCam = Camera.main;
 
-            animatorTriggerHash = Animator.StringToHash(animatorTriggerName);
+            // animatorTriggerHash = Animator.StringToHash(animatorTriggerName);
             return this;
         }
 
@@ -97,10 +84,11 @@ namespace BulletSystem
             launchDirection = direction.normalized;
             bulletColor = color;
             bulletLaunchSource = source;
+            spriteRenderer.sprite = color == BulletColor.White ? whiteColorSprite : blackColorSprite;
 
             // 회전하기
-            float angle = Mathf.Atan2(launchDirection.y, launchDirection.x) * Mathf.Rad2Deg;
-            transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 180f));
+            // float angle = Mathf.Atan2(launchDirection.y, launchDirection.x) * Mathf.Rad2Deg;
+            // transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle + 180f));
 
             isMoving = true;
             myCollider2D.enabled = true;
@@ -152,7 +140,9 @@ namespace BulletSystem
 
             isMoving = false;
             myCollider2D.enabled = false;
-            animator.SetTrigger(animatorTriggerHash);
+            BulletManager.Instance.ReleaseBullet(this);
+            gameObject.SetActive(false);
+            // animator.SetTrigger(animatorTriggerHash);
         }
         #endregion
     }
