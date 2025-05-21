@@ -9,23 +9,23 @@ public class Player : MonoBehaviour, IBulletHitAble
     //private SpriteRenderer spriteRd;
     ColorConverter spriteRenderer;
 
-    //Moving
+    //---Moving---
     private Vector2 moveDirection;
     [SerializeField]
     private float moveSpeed;
 
-    //Looking
+    //---Looking---
     private Vector2 mouseScreenPos;
     private Camera mainCam;
     private PlayerAnimator animator;
 
-    //HP
+    //---HP---
     [Header("Player Status")]
     public int currentHP;
     public int maxHP = 3;
 
     // Bullet
-    
+
     /// <summary>
     /// 현재 총알의 색상입니다.
     /// </summary>
@@ -48,6 +48,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     private float bulletCooldownTimer = 0f;
 
     public GameObject explosionEffect;
+
     //Die
     public delegate void PlayerDieHandler(); //type
     public static event PlayerDieHandler OnPlayerDie; //event
@@ -58,7 +59,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     {
         rb = GetComponent<Rigidbody2D>();
 
-        //Looking
+        //---Looking---
         mainCam = Camera.main;
         animator = GetComponentInChildren<PlayerAnimator>();
 
@@ -67,16 +68,17 @@ public class Player : MonoBehaviour, IBulletHitAble
         spriteRenderer = GetComponentInChildren<ColorConverter>();
         spriteRenderer.SetColor(playerColor);
         //HP
+
         currentHP = maxHP;
     }
 
 
     void Update()
     {
-        //Moving
+        //---Moving---
         rb.linearVelocity = moveDirection * moveSpeed;
 
-        //Looking
+        //---Looking---
         Vector2 mouseWorldPos = mainCam.ScreenToWorldPoint(mouseScreenPos);
         Vector2 dirVec = mouseWorldPos - (Vector2)transform.position;
 
@@ -115,9 +117,9 @@ public class Player : MonoBehaviour, IBulletHitAble
         }
     }
 
-    //------ PLAYER CONTROL ------
+    //------PLAYER CONTROL------
     /// <summary>
-    /// player : wsad Moving
+    /// wsad를 이용해 움직입니다.
     /// </summary>
     /// <param name="context"></param>
     public void OnMove(InputAction.CallbackContext context)
@@ -126,7 +128,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     }
 
     /// <summary>
-    /// player : Mouse dir Looking
+    /// Mouse 방향으로 회전합니다.
     /// </summary>
     /// <param name="context"></param>
     public void OnLook(InputAction.CallbackContext context)
@@ -135,7 +137,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     }
 
     /// <summary>
-    /// player : Left click => change color to white
+    /// 좌클릭 => 흰색으로 변경합니다.
     /// </summary>
     /// <param name="context"></param>
     public void OnLeftClick(InputAction.CallbackContext context)
@@ -150,7 +152,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     }
     
     /// <summary>
-    /// player : Right click => change color to black
+    /// 우클릭 => 검은색으로 변경합니다.
     /// </summary>
     /// <param name="context"></param>
     public void OnRightClick(InputAction.CallbackContext context)
@@ -164,6 +166,10 @@ public class Player : MonoBehaviour, IBulletHitAble
         }
     }
 
+    /// <summary>
+    /// 플레이어의 hp를 관리합니다.
+    /// </summary>
+    /// <param name="hp"></param>
     public void ChangeHp(int hp)
     {
         currentHP += hp;
@@ -176,7 +182,12 @@ public class Player : MonoBehaviour, IBulletHitAble
         }
     }
 
-    // ----- PLAYER HIT ------
+    //-----PLAYER HIT------
+    /// <summary>
+    /// 플레이어의 피격 후 체력 하강, 무적 상태로 전환을 합니다.
+    /// </summary>
+    /// <param name="damage"></param>
+    /// <param name="bullet"></param>
     public void Hit(float damage, Bullet bullet)
     {
         Debug.Log("Hit!!");
@@ -193,6 +204,12 @@ public class Player : MonoBehaviour, IBulletHitAble
 
     }
 
+    /// <summary>
+    /// 플레이어의 총알 색상 일치 판정을 합니다.
+    /// </summary>
+    /// <param name="color"></param>
+    /// <param name="bullet"></param>
+    /// <returns></returns>
     public bool CheckHitAble(BulletColor color, Bullet bullet)
     {
         if (bullet.bulletLaunchSource == gameObject)
@@ -213,6 +230,10 @@ public class Player : MonoBehaviour, IBulletHitAble
         }
     }
 
+    /// <summary>
+    /// 플레이어의 무적 상태를 유지하는 코루틴입니다.
+    /// </summary>
+    /// <returns></returns>
     IEnumerator Invincible()
     {
         GetComponent<CapsuleCollider2D>().enabled = false;
@@ -225,6 +246,9 @@ public class Player : MonoBehaviour, IBulletHitAble
 
 
     //------ PLAYER DIE ------
+    /// <summary>
+    /// 플레이어의 사망 후 처리를 합니다.
+    /// </summary>
     private void PlayerDie()
     {
         Debug.Log("OMG Die!!");
