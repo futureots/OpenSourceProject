@@ -65,7 +65,7 @@ public class Player : MonoBehaviour, IBulletHitAble
         //Change Color
         //spriteRd = GetComponent<SpriteRenderer>();
         spriteRenderer = GetComponentInChildren<ColorConverter>();
-
+        spriteRenderer.SetColor(playerColor);
         //HP
         currentHP = maxHP;
     }

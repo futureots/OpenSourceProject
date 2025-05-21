@@ -160,6 +160,15 @@ public class GameManager : Singleton<GameManager>
 
         SaveStageData();
 
+        StartCoroutine(EndCoroutine());
+    }
+
+    IEnumerator EndCoroutine()
+    {
+        yield return new WaitForSeconds(3f);
+
+        //UI 표시 및 레벨 화면으로 이동
+
         PauseTime(true);
     }
 }

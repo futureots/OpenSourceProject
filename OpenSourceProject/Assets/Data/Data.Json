@@ -1,1 +1,12 @@
-{"$type":"PlayerData, Assembly-CSharp","data":{"$type":"System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[StageData, Assembly-CSharp]], mscorlib","0":{"$type":"StageData, Assembly-CSharp"},"1":{"$type":"StageData, Assembly-CSharp","stage_time":4.939724}}}
+{
+  "$type": "PlayerData, Assembly-CSharp",
+  "data": {
+    "$type": "System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[StageData, Assembly-CSharp]], mscorlib",
+    "0": { "$type": "StageData, Assembly-CSharp" },
+    "1": {
+      "$type": "StageData, Assembly-CSharp",
+      "stage_point": 180,
+      "stage_time": 92.25815
+    }
+  }
+}

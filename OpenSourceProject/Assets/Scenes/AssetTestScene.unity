@@ -5728,6 +5728,10 @@ PrefabInstance:
       propertyPath: m_SortingLayerID
       value: -649642159
       objectReference: {fileID: 0}
+    - target: {fileID: 6026749301654362876, guid: e537f6e190e66b240b0323f625e09047, type: 3}
+      propertyPath: maxHP
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 7245345349173692140, guid: e537f6e190e66b240b0323f625e09047, type: 3}
       propertyPath: m_Name
       value: Player
