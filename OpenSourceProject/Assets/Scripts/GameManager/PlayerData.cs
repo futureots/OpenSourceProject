@@ -30,6 +30,10 @@ public class PlayerData
     public void SavePlayerData(string fileName)
     {
         string data = SerializePartyData(this);
+        if (!Directory.Exists(Application.dataPath +"/Data"))
+        {
+            Directory.CreateDirectory(Application.dataPath + "/Data");
+        }
         string path = Path.Combine(Application.dataPath + "/Data", fileName + ".Json");
         File.WriteAllText(path, data);
         Debug.Log(data);
@@ -37,6 +41,7 @@ public class PlayerData
     }
     public static PlayerData LoadPlayerData(string fileName)
     {
+        
         string path = Path.Combine(Application.dataPath + "/Data", fileName + ".Json");
         string data = null;
         if (File.Exists(path))

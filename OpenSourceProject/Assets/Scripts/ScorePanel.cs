@@ -15,8 +15,14 @@ public class ScorePanel : MonoBehaviour
     public void SetPanel()
     {
         var data = PlayerData.LoadPlayerData("Data");
-        score.text = data.data[stageNum].point.ToString();
-        int time = (int)data.data[stageNum].time;
-        timePanel.text = $"{time / 60} : {time % 60}";
+
+        if (data.data.ContainsKey(stageNum))
+        {
+            score.text = data.data[stageNum].point.ToString();
+            int time = (int)data.data[stageNum].time;
+            timePanel.text = $"{time / 60} : {time % 60}";
+        }
+        
+        
     }
 }
