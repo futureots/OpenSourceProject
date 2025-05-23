@@ -127,6 +127,19 @@ namespace BulletSystem
                 // 총알을 발사합니다.
                 bullet.Launch(color, position, speed, damage, direction, source);
         }
+        
+        /// <summary>
+        /// 화면에 떠 있는 모든 Bullet을 비활성화(제거) 합니다.
+        /// </summary>
+        public static void ClearAllBullets()
+        {
+            // 씬에 떠 있는 모든 Bullet 컴포넌트를 찾아서 Release
+            foreach (var bullet in FindObjectsOfType<Bullet>())
+            {
+                bullet.gameObject.SetActive(false);
+                Instance.ReleaseBullet(bullet);
+            }
+        }
 
         #endregion
     }

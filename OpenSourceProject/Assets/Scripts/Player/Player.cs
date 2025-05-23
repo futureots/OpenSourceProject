@@ -53,7 +53,11 @@ public class Player : MonoBehaviour, IBulletHitAble
     public delegate void PlayerDieHandler(); //type
     public static event PlayerDieHandler OnPlayerDie; //event
     private bool isDie = false;
-
+    
+    //Item Effects
+    private bool isAnyColor = false;          // A 아이템: 색 무시
+    private Coroutine rapidFireRoutine;       // S 아이템
+    private Coroutine damageBuffRoutine;      // D 아이템
 
     private void Awake()
     {
@@ -213,21 +217,12 @@ public class Player : MonoBehaviour, IBulletHitAble
     public bool CheckHitAble(BulletColor color, Bullet bullet)
     {
         if (bullet.bulletLaunchSource == gameObject)
-        {
-            // 발사한 총알은 무시
             return false;
-        }
 
-        if (color == playerColor)
-        {
-            // 같은 색깔의 총알은 맞음
+        if (isAnyColor)
             return true;
-        }
-        else
-        {
-            // 다른 색깔의 총알은 무시
-            return false;
-        }
+
+        return color == playerColor;
     }
 
     /// <summary>
@@ -261,5 +256,77 @@ public class Player : MonoBehaviour, IBulletHitAble
         gameObject.SetActive(false);
         
     }
+    
+    // Item Effects
+    /// <summary>
+    /// 일정 시간 동안 공격속도를 multiplier 배로 높입니다.
+    /// </summary>
+    /// <param name="duration">지속시간(초)</param>
+    /// <param name="multiplier">속도 배율</param>
+    public void ApplyRapidFireBuff(float duration, float multiplier)
+    {
+        // 기존 코루틴이 돌고 있으면 중복 해제
+        if (rapidFireRoutine != null) StopCoroutine(rapidFireRoutine);
+        rapidFireRoutine = StartCoroutine(RapidFireBuff(duration, multiplier));
+    }
+
+    /// <summary>
+    /// 일정 시간 동안 피해량을 multiplier 배로 높입니다.
+    /// </summary>
+    /// <param name="duration">지속시간(초)</param>
+    /// <param name="multiplier">데미지 배율</param>
+    public void ApplyDamageBuff(float duration, float multiplier)
+    {
+        if (damageBuffRoutine != null) StopCoroutine(damageBuffRoutine);
+        damageBuffRoutine = StartCoroutine(DamageBuff(duration, multiplier));
+    }
+
+    /// <summary>
+    /// 일정 시간 동안 색깔 판정을 무시합니다.
+    /// </summary>
+    /// <param name="duration">지속시간(초)</param>
+    public void ApplyAnyColorBuff(float duration)
+    {
+        if (rapidFireRoutine != null) StopCoroutine(rapidFireRoutine);
+        if (damageBuffRoutine != null) StopCoroutine(damageBuffRoutine);
+    
+        if (isAnyColor)
+        {
+            StopCoroutine("AnyColorBuff");
+        }
+    
+        StartCoroutine(AnyColorBuff(duration));
+    }
+
+
+    //---- private Coroutine implementations ----
+
+    private IEnumerator RapidFireBuff(float duration, float multiplier)
+    {
+        float originalCooldown = bulletCooldown;
+        bulletCooldown /= multiplier;
+        yield return new WaitForSeconds(duration);
+        bulletCooldown = originalCooldown;
+    }
+
+    private IEnumerator DamageBuff(float duration, float multiplier)
+    {
+        float originalDamage = bulletDamage;
+        bulletDamage *= multiplier;
+        yield return new WaitForSeconds(duration);
+        bulletDamage = originalDamage;
+    }
+
+    private IEnumerator AnyColorBuff(float duration)
+    {
+        Debug.Log("AnyColorBuff Start");
+        isAnyColor = true;
+        yield return new WaitForSeconds(duration);
+        isAnyColor = false;
+        Debug.Log("AnyColorBuff End");
+    }
+
+
+
 
 }
