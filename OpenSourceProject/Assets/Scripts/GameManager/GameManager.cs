@@ -4,8 +4,6 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-using static UnityEditor.PlayerSettings;
-
 public class GameManager : Singleton<GameManager>
 {
     /// <summary>
@@ -153,10 +151,8 @@ public class GameManager : Singleton<GameManager>
     public void GameEnd()
     {
         Debug.Log("GameEnd");
-        StopAllCoroutines();
 
-        //UI에서 이 이벤트에 스테이지 종료 UI 표시 설정
-        OnStageEnd?.Invoke();
+        StopAllCoroutines();
 
         SaveStageData();
 
@@ -167,6 +163,8 @@ public class GameManager : Singleton<GameManager>
     {
         yield return new WaitForSeconds(3f);
 
+        //UI에서 이 이벤트에 스테이지 종료 UI 표시 설정
+        OnStageEnd?.Invoke();
         //UI 표시 및 레벨 화면으로 이동
 
         PauseTime(true);
