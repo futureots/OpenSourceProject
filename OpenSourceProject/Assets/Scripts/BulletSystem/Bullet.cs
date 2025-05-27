@@ -8,7 +8,7 @@ namespace BulletSystem
     public class Bullet : MonoBehaviour
     {
         #region Variables
-        [Header("Bullet Infomation")]
+        [Header("Bullet Information")]
         /// <summary>
         /// 총알의 속도
         /// </summary>
@@ -46,6 +46,11 @@ namespace BulletSystem
         private SpriteRenderer spriteRenderer;
         private Collider2D myCollider2D;
         private Camera mainCam;
+        
+        /// <summary>
+        /// 플레이어 버프에 의해 이 총알이 색판정을 무시해야 하는지 여부입니다.
+        /// </summary>
+        public bool ignoreColor { get; private set; }
     
         #endregion
 
@@ -92,6 +97,20 @@ namespace BulletSystem
 
             isMoving = true;
             myCollider2D.enabled = true;
+            
+            bulletLaunchSource = source;
+
+            // (1) 발사 시점에 플레이어의 색무시 버프를 물려준다
+            ignoreColor = false;
+            if (source.CompareTag("Player") 
+                && source.TryGetComponent<Player>(out var player)
+                && player.IsAnyColorPublic)
+            {
+                ignoreColor = true;
+            }
+
+            isMoving = true;
+            myCollider2D.enabled = true;
         }
 
         // Update 함수에서 총알이 발사된 방향으로 이동합니다.
@@ -128,13 +147,25 @@ namespace BulletSystem
             {
                 return;
             }
-
+             
             if (other.gameObject.TryGetComponent<IBulletHitAble>(out var hitAble))
             {
-                if (!hitAble.CheckHitAble(bulletColor, this))
+                bool canHit;
+
+                // (2) “플레이어가 쏜 총알” + “버프가 묻은 총알” 이면 무조건 적중
+                if (ignoreColor && bulletLaunchSource.CompareTag("Player"))
                 {
-                    return;
+                    canHit = true;
                 }
+                else
+                {
+                    // 원래 색 비교 로직
+                    canHit = hitAble.CheckHitAble(bulletColor, this);
+                }
+
+                if (!canHit) 
+                    return;
+
                 hitAble.Hit(bulletDamage, this);
             }
 

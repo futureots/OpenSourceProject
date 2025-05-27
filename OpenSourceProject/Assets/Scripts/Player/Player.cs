@@ -53,6 +53,17 @@ public class Player : MonoBehaviour, IBulletHitAble
     public delegate void PlayerDieHandler(); //type
     public static event PlayerDieHandler OnPlayerDie; //event
     private bool isDie = false;
+    
+    //Item Effects
+    private bool isAnyColor = false;          // A 아이템: 색 무시
+    private Coroutine rapidFireRoutine;       // S 아이템
+    private Coroutine damageBuffRoutine;      // D 아이템
+    private Coroutine anyColorRoutine;
+    
+    public bool IsAnyColorPublic => isAnyColor;
+    
+    /// <summary>무적 상태 여부</summary>
+    private bool isInvincible = false;
 
 
     private void Awake()
@@ -120,7 +131,7 @@ public class Player : MonoBehaviour, IBulletHitAble
 
     //------PLAYER CONTROL------
     /// <summary>
-    /// wsad를 이용해 움직입니다.
+    /// wasd를 이용해 움직입니다.
     /// </summary>
     /// <param name="context"></param>
     public void OnMove(InputAction.CallbackContext context)
@@ -208,42 +219,46 @@ public class Player : MonoBehaviour, IBulletHitAble
     /// <summary>
     /// 플레이어의 총알 색상 일치 판정을 합니다.
     /// </summary>
-    /// <param name="color"></param>
-    /// <param name="bullet"></param>
-    /// <returns></returns>
+    /// <param name="color">충돌한 총알의 색상</param>
+    /// <param name="bullet">충돌한 총알 객체</param>
+    /// <returns>맞을 수 있으면 true</returns>
     public bool CheckHitAble(BulletColor color, Bullet bullet)
     {
+        // 1) 자기 총알은 무시
         if (bullet.bulletLaunchSource == gameObject)
+            return false;
+
+        // 2) 플레이어 A-버프(모든 색 무시) → ‘플레이어가 쏜’ 총알만 통과
+        if (isAnyColor && bullet.bulletLaunchSource.CompareTag("Player"))
+            return true;
+
+        // 3) 무적 상태 중 ‘적의 다른 색’ 총알은 무시
+        if (isInvincible 
+            && bullet.bulletLaunchSource.CompareTag("ENEMY") 
+            && color != playerColor)
         {
-            // 발사한 총알은 무시
             return false;
         }
 
-        if (color == playerColor)
-        {
-            // 같은 색깔의 총알은 맞음
-            return true;
-        }
-        else
-        {
-            // 다른 색깔의 총알은 무시
-            return false;
-        }
+        // 4) 그 외엔 색이 같아야만 맞음
+        return color == playerColor;
     }
+
 
     /// <summary>
     /// 플레이어의 무적 상태를 유지하는 코루틴입니다.
     /// </summary>
-    /// <returns></returns>
-    IEnumerator Invincible()
+    private IEnumerator Invincible()
     {
-        GetComponent<CapsuleCollider2D>().enabled = false;
-        
-        // 무적 이펙트
+        isInvincible = true;
+
+        // 스프라이트 깜빡임 이펙트만 돌리고,
+        // collider는 항상 켜둡니다.
         yield return StartCoroutine(spriteRenderer.Invincible());
 
-        GetComponent<CapsuleCollider2D>().enabled = true;
+        isInvincible = false;
     }
+
 
 
     //------ PLAYER DIE ------
@@ -262,5 +277,74 @@ public class Player : MonoBehaviour, IBulletHitAble
         gameObject.SetActive(false);
         
     }
+    
+    // Item Effects
+    /// <summary>
+    /// 일정 시간 동안 공격속도를 multiplier 배로 높입니다.
+    /// </summary>
+    /// <param name="duration">지속시간(초)</param>
+    /// <param name="multiplier">속도 배율</param>
+    public void ApplyRapidFireBuff(float duration, float multiplier)
+    {
+        // 기존 코루틴이 돌고 있으면 중복 해제
+        if (rapidFireRoutine != null) StopCoroutine(rapidFireRoutine);
+        rapidFireRoutine = StartCoroutine(RapidFireBuff(duration, multiplier));
+    }
+
+    /// <summary>
+    /// 일정 시간 동안 피해량을 multiplier 배로 높입니다.
+    /// </summary>
+    /// <param name="duration">지속시간(초)</param>
+    /// <param name="multiplier">데미지 배율</param>
+    public void ApplyDamageBuff(float duration, float multiplier)
+    {
+        if (damageBuffRoutine != null) StopCoroutine(damageBuffRoutine);
+        damageBuffRoutine = StartCoroutine(DamageBuff(duration, multiplier));
+    }
+
+    /// <summary>
+    /// 일정 시간 동안 색깔 판정을 무시합니다.
+    /// </summary>
+    /// <param name="duration">지속시간(초)</param>
+    public void ApplyAnyColorBuff(float duration)
+    {
+        Debug.Log($"[AnyColorBuff] Start – duration={duration}, 기존 코루틴={anyColorRoutine}");
+        if (anyColorRoutine != null) StopCoroutine(anyColorRoutine);
+        anyColorRoutine = StartCoroutine(AnyColorBuff(duration));
+    }
+
+
+    //---- private Coroutine implementations ----
+
+    private IEnumerator RapidFireBuff(float duration, float multiplier)
+    {
+        float originalCooldown = bulletCooldown;
+        bulletCooldown /= multiplier;
+        yield return new WaitForSeconds(duration);
+        bulletCooldown = originalCooldown;
+    }
+
+    private IEnumerator DamageBuff(float duration, float multiplier)
+    {
+        float originalDamage = bulletDamage;
+        bulletDamage *= multiplier;
+        yield return new WaitForSeconds(duration);
+        bulletDamage = originalDamage;
+    }
+
+    private IEnumerator AnyColorBuff(float duration)
+    {
+        Debug.Log("[AnyColorBuff] → isAnyColor = true");
+        isAnyColor = true;
+
+        yield return new WaitForSeconds(duration);
+
+        isAnyColor = false;
+        anyColorRoutine = null;
+        Debug.Log("[AnyColorBuff] → isAnyColor = false");
+    }
+
+
+
 
 }

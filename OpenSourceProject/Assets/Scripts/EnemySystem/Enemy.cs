@@ -238,6 +238,7 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     // 사망 시 점수를 추가하고 오브젝트를 파괴합니다.
     private void Die()
     {
+        Debug.Log("Enemy Die called");
         isAlive = false;
         GameManager.Instance.AddPoint(scoreValue);
         
