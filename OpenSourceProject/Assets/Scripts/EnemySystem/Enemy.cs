@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using BulletSystem;
+using ItemSystem;
 
 /// <summary>
 /// 적의 동작과 상태를 관리하는 클래스입니다.
@@ -238,16 +239,26 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     // 사망 시 점수를 추가하고 오브젝트를 파괴합니다.
     private void Die()
     {
-        Debug.Log("Enemy Die called");
         isAlive = false;
         GameManager.Instance.AddPoint(scoreValue);
-        
-        //사망 이펙트 생성
+
         var effect = Instantiate(explosionEffect, transform.position, Quaternion.identity);
         Destroy(effect, 0.5f);
 
+        // 30% 확률로 아이템을 소환한다.
+        const float spawnChance = 0.3f;
+        if (Random.value < spawnChance)
+        {
+            ItemInfo itemToSpawn = GameManager.Instance.GetRandomItemInfo();
+            if (itemToSpawn != null)
+            {
+                ItemManager.SummonItem(itemToSpawn, transform.position);
+            }
+        }
+
         Destroy(gameObject);
     }
+
 
     #endregion
 }
