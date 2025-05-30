@@ -29,6 +29,13 @@ namespace ItemSystem
         public int hitCount;
 
         private Camera mainCamera;
+        
+        /// <summary>
+        /// 아이템의 생존 시간을 설정합니다. 기본 10초.
+        /// </summary>
+        public float LifeTime = 10f;
+
+        private float lifeTimer;
 
         /// <summary>
         /// 아이템의 정보를 설정합니다.
@@ -46,12 +53,22 @@ namespace ItemSystem
 
             itemInfo = info;
             spriteRenderer.sprite = info.ItemSprite;
-
+            
+            lifeTimer = LifeTime;
         }
 
         private void Update()
         {
+            // 아이템 이동
             transform.Translate(speed * Time.deltaTime * direction);
+            
+            // 생존 시간 감소 및 만료 시 파괴
+            lifeTimer -= Time.deltaTime;
+            if (lifeTimer <= 0)
+            {
+                Destroy(gameObject);
+                return;
+            }
 
             // 화면 밖으로 나가면 튕겨나갑니다.
             

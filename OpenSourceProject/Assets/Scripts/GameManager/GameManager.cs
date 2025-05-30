@@ -3,41 +3,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using ItemSystem;
 
 public class GameManager : Singleton<GameManager>
 {
     /// <summary>
-    /// ½ºÅ×ÀÌÁö ´Ü°è
+    /// ìŠ¤í…Œì´ì§€ ë‹¨ê³„(ì¸ë±ìŠ¤)
     /// </summary>
     public int stageNumber;
     /// <summary>
-    /// Àû Á¾·ù
+    /// ì  ì¢…ë¥˜
     /// </summary>
     public List<GameObject> enemyPrefabs;
 
     public Player player;
     /// <summary>
-    /// ÇöÀç È¹µæÇÑ Á¡¼ö
+    /// í•´ë‹¹ ìŠ¤í…Œì´ì§€ ì ìˆ˜
     /// </summary>
     public int point {  get; private set; }
     /// <summary>
-    /// Á¡¼ö¸¦ Ãß°¡ÇÏ´Â ÇÔ¼ö
+    /// ì ìˆ˜ ì¶”ê°€
     /// </summary>
-    /// <param name="point">È¹µæ·®</param>
+    /// <param name="point">íšë“ëŸ‰</param>
     public void AddPoint(int point)
     {
         this.point += point;
     }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö¿¡¼­ ¹öÆ¾ ½Ã°£
+    /// í•´ë‹¹ ìŠ¤í…Œì´ì§€ ì‹œê°„
     /// </summary>
     public float time { get; private set; }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö Á¾·á ½Ã ½ÇÇà
+    /// ìŠ¤í…Œì´ì§€ ì¢…ë£Œ ì´ë²¤íŠ¸
     /// </summary>
     public UnityEvent OnStageEnd;
+    
+    /// <summary>
+    /// íšë“ ê°€ëŠ¥í•œ 
+    /// </summary>
+    public List<ItemInfo> AvailableItems;
 
     private void Start()
     {
@@ -51,8 +57,19 @@ public class GameManager : Singleton<GameManager>
     {
         time += Time.deltaTime;
     }
+    
 
-    // ÀÏÁ¤ ½Ã°£¸¶´Ù ÀûÀ» ½ºÆùÇÏ´Â ÄÚ·çÆ¾
+    public ItemInfo GetRandomItemInfo()
+    {
+        if (AvailableItems == null || AvailableItems.Count == 0)
+        {
+            return null;
+        }
+        int index = Random.Range(0, AvailableItems.Count);
+        return AvailableItems[index];
+    }
+
+    // ì  ëœë¤ ìœ„ì¹˜ ìŠ¤í° ì½”ë£¨í‹´
     IEnumerator SpawnEnemy(float delay)
     {
         if(delay <= 0) delay = 1f;
@@ -75,13 +92,13 @@ public class GameManager : Singleton<GameManager>
                 var colls = Physics2D.OverlapCircleAll(worldPos, radius);
                 //Debug.Log(colls.Length);
                 if (colls.Length == 0) break;
-                // ¹«ÇÑ ·çÇÁ ¹æÁö
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
                 yield return new WaitForSeconds(0.5f);
+
                 radius *= 0.9f;
             }
             var enemyInstance = Instantiate(randEnemy, worldPos, Quaternion.identity);
 
-            // ¿£Æ¼Æ¼ ·£´ı ¼³Á¤
             var enemy = enemyInstance.GetComponent<Enemy>();
             int level = 0;
             int hp = Random.Range(level+1, level+10);
@@ -120,9 +137,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
     /// <summary>
-    /// ½Ã°£À» ¸ØÃß´Â ÇÔ¼ö(ÀÏ½ÃÁ¤Áö ¿É¼Ç ¶Ç´Â °ÔÀÓ Á¾·á ½Ã »ç¿ë)
+    /// TimeScale ì •ì§€
     /// </summary>
-    /// <param name="isPause">true´Â Á¤Áö, false´Â Àç»ı</param>
+    /// <param name="isPause">true : ì •ì§€, false : ì¬ìƒ</param>
     public static void PauseTime(bool isPause)
     {
         if (isPause)
@@ -137,7 +154,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// ÇöÀç ½ºÅ×ÀÌÁö Á¤º¸(½ºÅ×ÀÌÁö ·¹º§, Á¡¼ö, ½Ã°£) ÀúÀå
+    /// Data.jsonì— í”Œë ˆì´ì–´ ë°ì´í„° ì €ì¥
     /// </summary>
     public void SaveStageData()
     {
@@ -155,11 +172,13 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö Á¾·á ÇÔ¼ö(ÇÃ·¹ÀÌ¾î »ç¸Á ½Ã È£Ãâ)
+    /// ê²Œì„ ì¢…ë£Œ í˜¸ì¶œ 
     /// </summary>
     public void GameEnd()
     {
         Debug.Log("GameEnd");
+
+        OnStageEnd?.Invoke();
 
         StopAllCoroutines();
 
@@ -172,9 +191,7 @@ public class GameManager : Singleton<GameManager>
     {
         yield return new WaitForSeconds(3f);
 
-        //UI¿¡¼­ ÀÌ ÀÌº¥Æ®¿¡ ½ºÅ×ÀÌÁö Á¾·á UI Ç¥½Ã ¼³Á¤
-        OnStageEnd?.Invoke();
-        //UI Ç¥½Ã ¹× ·¹º§ È­¸éÀ¸·Î ÀÌµ¿
+
 
         PauseTime(true);
     }
