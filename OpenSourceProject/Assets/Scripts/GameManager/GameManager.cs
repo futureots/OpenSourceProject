@@ -18,11 +18,11 @@ public class GameManager : Singleton<GameManager>
 
     public Player player;
     /// <summary>
-    /// 占쏙옙占쏙옙 획占쏙옙占쏙옙 占쏙옙占쏙옙
+    /// 
     /// </summary>
     public int point {  get; private set; }
     /// <summary>
-    /// 占쏙옙占쏙옙占쏙옙 占쌩곤옙占싹댐옙 占쌉쇽옙
+    /// 
     /// </summary>
     /// <param name="point">획占썸량</param>
     public void AddPoint(int point)
@@ -31,18 +31,17 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// 占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙틴 占시곤옙
+    /// 
     /// </summary>
     public float time { get; private set; }
 
     /// <summary>
-    /// 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙 占쏙옙占쏙옙
+    /// 
     /// </summary>
     public UnityEvent OnStageEnd;
     
     /// <summary>
-    /// ъ⑺ 댄ㅼ 由ъㅽ몄.
-    ///  몄ㅽ곗 щ ItemInfo  뱁몄.
+    ///
     /// </summary>
     public List<ItemInfo> AvailableItems;
 
@@ -59,10 +58,7 @@ public class GameManager : Singleton<GameManager>
         time += Time.deltaTime;
     }
     
-    /// <summary>
-    /// 댄 由ъㅽ몄 臾댁濡 瑜 諛⑸.
-    /// </summary>
-    /// <returns>ㅼ쇰  ItemInfo 媛泥  null</returns>
+
     public ItemInfo GetRandomItemInfo()
     {
         if (AvailableItems == null || AvailableItems.Count == 0)
