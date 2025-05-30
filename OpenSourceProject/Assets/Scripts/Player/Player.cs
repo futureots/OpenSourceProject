@@ -65,6 +65,11 @@ public class Player : MonoBehaviour, IBulletHitAble
     /// <summary>무적 상태 여부</summary>
     private bool isInvincible = false;
 
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip fireSound;
+    [SerializeField] private AudioClip hitSound;
+    [SerializeField] private AudioClip deathSound;
+
 
     private void Awake()
     {
@@ -100,7 +105,7 @@ public class Player : MonoBehaviour, IBulletHitAble
             float slope = dirVec.y / dirVec.x;
             if (slope > -1 && slope < 1)
             {
-                if(dirVec.x > 0) animator.SetPlayerSprite(PlayerAnimator.Direction.Right);
+                if (dirVec.x > 0) animator.SetPlayerSprite(PlayerAnimator.Direction.Right);
                 else animator.SetPlayerSprite(PlayerAnimator.Direction.Left);
             }
             else
@@ -108,14 +113,14 @@ public class Player : MonoBehaviour, IBulletHitAble
                 if (dirVec.y > 0) animator.SetPlayerSprite(PlayerAnimator.Direction.Up);
                 else animator.SetPlayerSprite(PlayerAnimator.Direction.Down);
             }
-            
+
             //transform.up = dirVec.normalized;
             //float angle = Mathf.Atan2(dirVec.y, dirVec.x) * Mathf.Rad2Deg;
             //rb.rotation = angle; // z축 기준 회전
         }
 
         bulletCooldownTimer -= Time.deltaTime;
-        if(bulletCooldownTimer <= 0)
+        if (bulletCooldownTimer <= 0)
         {
             BulletManager.LaunchBullet(
                 color: playerColor,
@@ -126,6 +131,7 @@ public class Player : MonoBehaviour, IBulletHitAble
                 source: gameObject);
 
             bulletCooldownTimer = bulletCooldown;
+            AudioManager.PlaySound(fireSound, 0.5f, 0.5f);
         }
     }
 
@@ -206,13 +212,15 @@ public class Player : MonoBehaviour, IBulletHitAble
 
         // 플레이어는 총알의 데미지와 관계없이 항상 1데미지만 받음
         ChangeHp(-1);
-        var effect = Instantiate(explosionEffect,transform.position, Quaternion.identity);
-        Destroy(effect,0.5f);
+        var effect = Instantiate(explosionEffect, transform.position, Quaternion.identity);
+        Destroy(effect, 0.5f);
         if (!isDie)
         {
             // 플레이어가 맞았을 때 무적 상태로 전환
             StartCoroutine(Invincible());
         }
+        
+        AudioManager.PlaySound(hitSound);
 
     }
 
@@ -233,7 +241,8 @@ public class Player : MonoBehaviour, IBulletHitAble
             return true;
 
         // 3) 무적 상태 중 ‘적의 다른 색’ 총알은 무시
-        if (isInvincible 
+        if (isInvincible
+            && bullet.bulletLaunchSource != null 
             && bullet.bulletLaunchSource.CompareTag("ENEMY") 
             && color != playerColor)
         {
@@ -275,6 +284,8 @@ public class Player : MonoBehaviour, IBulletHitAble
         OnPlayerDie?.Invoke();
         //OnPlayerDie();
         gameObject.SetActive(false);
+
+        AudioManager.PlaySound(deathSound);
         
     }
     

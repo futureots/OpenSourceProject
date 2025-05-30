@@ -37,6 +37,9 @@ namespace ItemSystem
 
         private float lifeTimer;
 
+        [Header("Audio Settings")]
+        [SerializeField] private AudioClip itemGetSound;
+
         /// <summary>
         /// 아이템의 정보를 설정합니다.
         /// </summary>
@@ -53,7 +56,7 @@ namespace ItemSystem
 
             itemInfo = info;
             spriteRenderer.sprite = info.ItemSprite;
-            
+
             lifeTimer = LifeTime;
         }
 
@@ -114,6 +117,8 @@ namespace ItemSystem
             {
                 ItemManager.ApplyItemEffectToPlayer(itemInfo);
                 Destroy(gameObject);
+
+                AudioManager.PlaySound(itemGetSound);
             }
         }
 

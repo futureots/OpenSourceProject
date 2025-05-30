@@ -252,3 +252,5 @@ MonoBehaviour:
   burstInterval: 0.1
   scoreValue: 10
   explosionEffect: {fileID: 609406308895504931, guid: 0cf323a9572c404e8967837546721593, type: 3}
+  hitSound: {fileID: 8300000, guid: 902828a83676948b2a085a2c006596fd, type: 3}
+  deathSound: {fileID: 8300000, guid: aa2fcafe8628340078c5a01209215a07, type: 3}
