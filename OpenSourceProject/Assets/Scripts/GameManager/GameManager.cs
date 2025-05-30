@@ -128,10 +128,10 @@ public class GameManager : Singleton<GameManager>
             Debug.Log("SpawnEnemy");
             yield return new WaitForSeconds(delay);
             count++;
-            if (count * delay > 20)
+            if (count > 10)
             {
-                count -= 20f;
-                delay *= 0.8f;
+                count = 0;
+                delay *= 0.7f;
                 level++;
             }
         }
@@ -178,11 +178,11 @@ public class GameManager : Singleton<GameManager>
     {
         Debug.Log("GameEnd");
 
-        OnStageEnd?.Invoke();
-
         StopAllCoroutines();
 
         SaveStageData();
+
+        OnStageEnd?.Invoke();
 
         StartCoroutine(EndCoroutine());
     }
