@@ -5703,6 +5703,13 @@ MonoBehaviour:
   OnStageEnd:
     m_PersistentCalls:
       m_Calls: []
+  AvailableItems:
+  - {fileID: 11400000, guid: 99131cbc2ff304d4db96f27a4e34d069, type: 2}
+  - {fileID: 11400000, guid: f81114fbd14e842d98a80dc1107cebaa, type: 2}
+  - {fileID: 11400000, guid: aadbb105493f24110b17f02e213ace21, type: 2}
+  - {fileID: 11400000, guid: 128a6b40694604b0ea4a58bfa2ba0329, type: 2}
+  - {fileID: 11400000, guid: 67c5b8a6c4e0d44b396fb09d6494a808, type: 2}
+  - {fileID: 11400000, guid: 0dd5dee761d70344b9418fb5e7cf861e, type: 2}
 --- !u!4 &1483539612
 Transform:
   m_ObjectHideFlags: 0
@@ -6610,6 +6617,10 @@ PrefabInstance:
     - target: {fileID: 1630897604864351946, guid: 148e24a6684a6184682a850a32b84cd0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7166215098658741927, guid: 148e24a6684a6184682a850a32b84cd0, type: 3}
+      propertyPath: speed
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8940117334508022611, guid: 148e24a6684a6184682a850a32b84cd0, type: 3}
       propertyPath: m_Name
