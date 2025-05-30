@@ -5,46 +5,44 @@ using UnityEngine;
 using UnityEngine.Events;
 using ItemSystem;
 
-using static UnityEditor.PlayerSettings;
-
 public class GameManager : Singleton<GameManager>
 {
     /// <summary>
-    /// �������� �ܰ�
+    /// 占쏙옙占쏙옙占쏙옙占쏙옙 占쌤곤옙
     /// </summary>
     public int stageNumber;
     /// <summary>
-    /// �� ����
+    /// 占쏙옙 占쏙옙占쏙옙
     /// </summary>
     public List<GameObject> enemyPrefabs;
 
     public Player player;
     /// <summary>
-    /// ���� ȹ���� ����
+    /// 占쏙옙占쏙옙 획占쏙옙占쏙옙 占쏙옙占쏙옙
     /// </summary>
     public int point {  get; private set; }
     /// <summary>
-    /// ������ �߰��ϴ� �Լ�
+    /// 占쏙옙占쏙옙占쏙옙 占쌩곤옙占싹댐옙 占쌉쇽옙
     /// </summary>
-    /// <param name="point">ȹ�淮</param>
+    /// <param name="point">획占썸량</param>
     public void AddPoint(int point)
     {
         this.point += point;
     }
 
     /// <summary>
-    /// ������������ ��ƾ �ð�
+    /// 占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙틴 占시곤옙
     /// </summary>
     public float time { get; private set; }
 
     /// <summary>
-    /// �������� ���� �� ����
+    /// 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙 占쏙옙占쏙옙
     /// </summary>
     public UnityEvent OnStageEnd;
     
     /// <summary>
-    /// 사용할 아이템들의 리스트입니다.
-    /// 유니티 인스펙터에서 여러 ItemInfo 에셋을 할당하세요.
+    /// ъ⑺ 댄ㅼ 由ъㅽ몄.
+    ///  몄ㅽ곗 щ ItemInfo  뱁몄.
     /// </summary>
     public List<ItemInfo> AvailableItems;
 
@@ -62,9 +60,9 @@ public class GameManager : Singleton<GameManager>
     }
     
     /// <summary>
-    /// 아이템 리스트에서 무작위로 하나를 반환합니다.
+    /// 댄 由ъㅽ몄 臾댁濡 瑜 諛⑸.
     /// </summary>
-    /// <returns>랜덤으로 선택된 ItemInfo 객체 또는 null</returns>
+    /// <returns>ㅼ쇰  ItemInfo 媛泥  null</returns>
     public ItemInfo GetRandomItemInfo()
     {
         if (AvailableItems == null || AvailableItems.Count == 0)
@@ -75,7 +73,7 @@ public class GameManager : Singleton<GameManager>
         return AvailableItems[index];
     }
 
-    // ���� �ð����� ���� �����ϴ� �ڷ�ƾ
+    // 占쏙옙占쏙옙 占시곤옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占싹댐옙 占쌘뤄옙틴
     IEnumerator SpawnEnemy(float delay)
     {
        if(delay <= 0) delay = 1f;
@@ -97,13 +95,13 @@ public class GameManager : Singleton<GameManager>
                 var colls = Physics2D.OverlapCircleAll(worldPos, radius);
                 //Debug.Log(colls.Length);
                 if (colls.Length == 0) break;
-                // ���� ���� ����
+                // 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙
                 yield return new WaitForSeconds(0.1f);
                 radius *= 0.9f;
             }
             var enemyInstance = Instantiate(randEnemy, worldPos, Quaternion.identity);
 
-            // ��ƼƼ ���� ����
+            // 占쏙옙티티 占쏙옙占쏙옙 占쏙옙占쏙옙
             var enemy = enemyInstance.GetComponent<Enemy>();
             int hp = Random.Range(1, 10);
             int rate = Random.Range(1, 3);
@@ -134,9 +132,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
     /// <summary>
-    /// �ð��� ���ߴ� �Լ�(�Ͻ����� �ɼ� �Ǵ� ���� ���� �� ���)
+    /// 占시곤옙占쏙옙 占쏙옙占쌩댐옙 占쌉쇽옙(占싹쏙옙占쏙옙占쏙옙 占심쇽옙 占실댐옙 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙 占쏙옙占)
     /// </summary>
-    /// <param name="isPause">true�� ����, false�� ���</param>
+    /// <param name="isPause">true占쏙옙 占쏙옙占쏙옙, false占쏙옙 占쏙옙占</param>
     public static void PauseTime(bool isPause)
     {
         if (isPause)
@@ -151,7 +149,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// ���� �������� ����(�������� ����, ����, �ð�) ����
+    /// 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙(占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙, 占쏙옙占쏙옙, 占시곤옙) 占쏙옙占쏙옙
     /// </summary>
     public void SaveStageData()
     {
@@ -169,15 +167,15 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// �������� ���� �Լ�(�÷��̾� ��� �� ȣ��)
+    /// 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쌉쇽옙(占시뤄옙占싱억옙 占쏙옙占 占쏙옙 호占쏙옙)
     /// </summary>
     public void GameEnd()
     {
         Debug.Log("GameEnd");
-        StopAllCoroutines();
 
-        //UI���� �� �̺�Ʈ�� �������� ���� UI ǥ�� ����
         OnStageEnd?.Invoke();
+
+        StopAllCoroutines();
 
         SaveStageData();
 
@@ -188,7 +186,7 @@ public class GameManager : Singleton<GameManager>
     {
         yield return new WaitForSeconds(3f);
 
-        //UI ǥ�� �� ���� ȭ������ �̵�
+
 
         PauseTime(true);
     }

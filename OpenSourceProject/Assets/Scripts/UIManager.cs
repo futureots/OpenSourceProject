@@ -7,10 +7,16 @@ public class UIManager : MonoBehaviour
     public TextMeshProUGUI pointPanel;
     public TextMeshProUGUI timePanel;
     public GameObject hpPanel;
+    public GameObject EndPanel;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        EndPanel.SetActive(false);
+        GameManager.Instance.OnStageEnd.AddListener(() =>
+        {
+            EndPanel.SetActive(true);
+            EndPanel.GetComponent<ResultPanel>().SetPanel();
+        });
     }
 
     // Update is called once per frame
@@ -25,6 +31,7 @@ public class UIManager : MonoBehaviour
         
     }
 
+    // 현재 체력 패널 업데이트
     void ShowHpPanel()
     {
         Player player = GameManager.Instance.player;

@@ -81,6 +81,7 @@ public class Player : MonoBehaviour, IBulletHitAble
         //HP
 
         currentHP = maxHP;
+        OnPlayerDie = null;
     }
 
 
