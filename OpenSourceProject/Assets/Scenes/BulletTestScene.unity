@@ -741,6 +741,7 @@ MonoBehaviour:
   pointPanel: {fileID: 651676614}
   timePanel: {fileID: 167253149}
   hpPanel: {fileID: 648286765}
+  EndPanel: {fileID: 0}
 --- !u!114 &812625226
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -8,40 +8,40 @@ using ItemSystem;
 public class GameManager : Singleton<GameManager>
 {
     /// <summary>
-    /// 占쏙옙占쏙옙占쏙옙占쏙옙 占쌤곤옙
+    /// 스테이지 단계(인덱스)
     /// </summary>
     public int stageNumber;
     /// <summary>
-    /// 占쏙옙 占쏙옙占쏙옙
+    /// 적 종류
     /// </summary>
     public List<GameObject> enemyPrefabs;
 
     public Player player;
     /// <summary>
-    /// 
+    /// 해당 스테이지 점수
     /// </summary>
     public int point {  get; private set; }
     /// <summary>
-    /// 
+    /// 점수 추가
     /// </summary>
-    /// <param name="point">획占썸량</param>
+    /// <param name="point">획득량</param>
     public void AddPoint(int point)
     {
         this.point += point;
     }
 
     /// <summary>
-    /// 
+    /// 해당 스테이지 시간
     /// </summary>
     public float time { get; private set; }
 
     /// <summary>
-    /// 
+    /// 스테이지 종료 이벤트
     /// </summary>
     public UnityEvent OnStageEnd;
     
     /// <summary>
-    ///
+    /// 획득 가능한 
     /// </summary>
     public List<ItemInfo> AvailableItems;
 
@@ -69,68 +69,77 @@ public class GameManager : Singleton<GameManager>
         return AvailableItems[index];
     }
 
-    // 占쏙옙占쏙옙 占시곤옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙占싹댐옙 占쌘뤄옙틴
+    // 적 랜덤 위치 스폰 코루틴
     IEnumerator SpawnEnemy(float delay)
     {
-       if(delay <= 0) delay = 1f;
+        if(delay <= 0) delay = 1f;
+        float count = 0;
         while (true)
         {
             if (enemyPrefabs.Count <= 0) yield break;
             var randEnemy = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Count)];
-            
-            
+
+
 
             Vector2 worldPos;
             float radius = 1f;
             while (true)
             {
-                Vector2 pos = new Vector2(Random.Range(100, Screen.width-100), Random.Range(100, Screen.height-100));
+                Vector2 pos = new Vector2(Random.Range(100, Screen.width - 100), Random.Range(100, Screen.height - 100));
                 //Debug.Log(pos);
                 worldPos = Camera.main.ScreenToWorldPoint(pos);
                 //Debug.Log(worldPos);
                 var colls = Physics2D.OverlapCircleAll(worldPos, radius);
                 //Debug.Log(colls.Length);
                 if (colls.Length == 0) break;
-                // 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙占쏙옙
-                yield return new WaitForSeconds(0.1f);
+                // ���� ���� ����
+                yield return new WaitForSeconds(0.5f);
+
                 radius *= 0.9f;
             }
             var enemyInstance = Instantiate(randEnemy, worldPos, Quaternion.identity);
 
-            // 占쏙옙티티 占쏙옙占쏙옙 占쏙옙占쏙옙
             var enemy = enemyInstance.GetComponent<Enemy>();
-            int hp = Random.Range(1, 10);
-            int rate = Random.Range(1, 3);
-            float speed = Random.Range(1, 8f);
-            BulletColor color = Random.Range(0,2) == 0 ? BulletColor.Black : BulletColor.White;
+            int level = 0;
+            int hp = Random.Range(level+1, level+10);
+            int rate = Random.Range((int)(level*0.4f) + 1, (int)(level * 0.4f)+3);
+            float speed = Random.Range(level * 0.3f + 1, level * 0.3f + 8f);
+            BulletColor color = Random.Range(0, 2) == 0 ? BulletColor.Black : BulletColor.White;
             var mode = Random.Range(0, 3);
             switch (mode)
             {
                 case 0:
-                    enemy.Init(hp,rate,speed,color);
+                    enemy.Init(hp, rate, speed, color);
                     break;
                 case 1:
-                    int rad = Random.Range(4,12);
+                    int rad = Random.Range(4, level + 12);
                     enemy.Init(hp, rate, speed, color, rad);
                     break;
                 case 2:
-                    int count = Random.Range(3, 5);
-                    float inter = 0.5f/rate;
-                    enemy.Init(hp, rate, speed, color,count, inter);
+                    int burstCount = Random.Range(3, level + 5);
+                    float inter = 0.5f / rate;
+                    enemy.Init(hp, rate, speed, color, burstCount, inter);
                     break;
                 default:
                     break;
             }
-            
-            
+
+
             Debug.Log("SpawnEnemy");
             yield return new WaitForSeconds(delay);
+            count++;
+            if (count * delay > 20)
+            {
+                count -= 20f;
+                delay *= 0.8f;
+                level++;
+            }
         }
     }
     /// <summary>
-    /// 占시곤옙占쏙옙 占쏙옙占쌩댐옙 占쌉쇽옙(占싹쏙옙占쏙옙占쏙옙 占심쇽옙 占실댐옙 占쏙옙占쏙옙 占쏙옙占쏙옙 占쏙옙 占쏙옙占)
+    /// TimeScale 정지
     /// </summary>
-    /// <param name="isPause">true占쏙옙 占쏙옙占쏙옙, false占쏙옙 占쏙옙占</param>
+    /// <param name="isPause">true : 정지, false : 재생</param>
     public static void PauseTime(bool isPause)
     {
         if (isPause)
@@ -145,7 +154,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// 占쏙옙占쏙옙 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙(占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙, 占쏙옙占쏙옙, 占시곤옙) 占쏙옙占쏙옙
+    /// Data.json에 플레이어 데이터 저장
     /// </summary>
     public void SaveStageData()
     {
@@ -163,7 +172,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// 占쏙옙占쏙옙占쏙옙占쏙옙 占쏙옙占쏙옙 占쌉쇽옙(占시뤄옙占싱억옙 占쏙옙占 占쏙옙 호占쏙옙)
+    /// 게임 종료 호출 
     /// </summary>
     public void GameEnd()
     {

@@ -71,6 +71,7 @@ namespace ItemSystem
             }
 
             // 화면 밖으로 나가면 튕겨나갑니다.
+            
             Vector3 screenPos = mainCamera.WorldToScreenPoint(transform.position);
 
             if (screenPos.x < 0 || screenPos.x > Screen.width || screenPos.y < 0 || screenPos.y > Screen.height)
