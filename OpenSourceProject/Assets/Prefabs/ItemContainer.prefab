@@ -154,6 +154,7 @@ MonoBehaviour:
   speed: 0
   hitCount: 0
   LifeTime: 10
+  itemGetSound: {fileID: 8300000, guid: 91daf65c6f4b34601987b01c16ee394c, type: 3}
 --- !u!1 &8225152345031563996
 GameObject:
   m_ObjectHideFlags: 0
