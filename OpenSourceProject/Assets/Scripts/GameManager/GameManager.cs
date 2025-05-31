@@ -3,41 +3,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using ItemSystem;
 
 public class GameManager : Singleton<GameManager>
 {
     /// <summary>
-    /// ½ºÅ×ÀÌÁö ´Ü°è
+    /// ìŠ¤í…Œì´ì§€ ë‹¨ê³„(ì¸ë±ìŠ¤)
     /// </summary>
     public int stageNumber;
     /// <summary>
-    /// Àû Á¾·ù
+    /// ì  ì¢…ë¥˜
     /// </summary>
     public List<GameObject> enemyPrefabs;
 
     public Player player;
     /// <summary>
-    /// ÇöÀç È¹µæÇÑ Á¡¼ö
+    /// í•´ë‹¹ ìŠ¤í…Œì´ì§€ ì ìˆ˜
     /// </summary>
     public int point {  get; private set; }
     /// <summary>
-    /// Á¡¼ö¸¦ Ãß°¡ÇÏ´Â ÇÔ¼ö
+    /// ì ìˆ˜ ì¶”ê°€
     /// </summary>
-    /// <param name="point">È¹µæ·®</param>
+    /// <param name="point">íšë“ëŸ‰</param>
     public void AddPoint(int point)
     {
         this.point += point;
     }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö¿¡¼­ ¹öÆ¾ ½Ã°£
+    /// í•´ë‹¹ ìŠ¤í…Œì´ì§€ ì‹œê°„
     /// </summary>
     public float time { get; private set; }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö Á¾·á ½Ã ½ÇÇà
+    /// ìŠ¤í…Œì´ì§€ ì¢…ë£Œ ì´ë²¤íŠ¸
     /// </summary>
     public UnityEvent OnStageEnd;
+    
+    /// <summary>
+    /// íšë“ ê°€ëŠ¥í•œ 
+    /// </summary>
+    public List<ItemInfo> AvailableItems;
 
     private void Start()
     {
@@ -51,69 +57,89 @@ public class GameManager : Singleton<GameManager>
     {
         time += Time.deltaTime;
     }
+    
 
-    // ÀÏÁ¤ ½Ã°£¸¶´Ù ÀûÀ» ½ºÆùÇÏ´Â ÄÚ·çÆ¾
+    public ItemInfo GetRandomItemInfo()
+    {
+        if (AvailableItems == null || AvailableItems.Count == 0)
+        {
+            return null;
+        }
+        int index = Random.Range(0, AvailableItems.Count);
+        return AvailableItems[index];
+    }
+
+    // ì  ëœë¤ ìœ„ì¹˜ ìŠ¤í° ì½”ë£¨í‹´
     IEnumerator SpawnEnemy(float delay)
     {
-       if(delay <= 0) delay = 1f;
+        if(delay <= 0) delay = 1f;
+        float count = 0;
         while (true)
         {
             if (enemyPrefabs.Count <= 0) yield break;
             var randEnemy = enemyPrefabs[UnityEngine.Random.Range(0, enemyPrefabs.Count)];
-            
-            
+
+
 
             Vector2 worldPos;
             float radius = 1f;
             while (true)
             {
-                Vector2 pos = new Vector2(Random.Range(100, Screen.width-100), Random.Range(100, Screen.height-100));
+                Vector2 pos = new Vector2(Random.Range(100, Screen.width - 100), Random.Range(100, Screen.height - 100));
                 //Debug.Log(pos);
                 worldPos = Camera.main.ScreenToWorldPoint(pos);
                 //Debug.Log(worldPos);
                 var colls = Physics2D.OverlapCircleAll(worldPos, radius);
                 //Debug.Log(colls.Length);
                 if (colls.Length == 0) break;
-                // ¹«ÇÑ ·çÇÁ ¹æÁö
-                yield return new WaitForSeconds(0.1f);
+                // ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
+                yield return new WaitForSeconds(0.5f);
+
                 radius *= 0.9f;
             }
             var enemyInstance = Instantiate(randEnemy, worldPos, Quaternion.identity);
 
-            // ¿£Æ¼Æ¼ ·£´ı ¼³Á¤
             var enemy = enemyInstance.GetComponent<Enemy>();
-            int hp = Random.Range(1, 10);
-            int rate = Random.Range(1, 3);
-            float speed = Random.Range(1, 8f);
-            BulletColor color = Random.Range(0,2) == 0 ? BulletColor.Black : BulletColor.White;
+            int level = 0;
+            int hp = Random.Range(level+1, level+10);
+            int rate = Random.Range((int)(level*0.4f) + 1, (int)(level * 0.4f)+3);
+            float speed = Random.Range(level * 0.3f + 1, level * 0.3f + 8f);
+            BulletColor color = Random.Range(0, 2) == 0 ? BulletColor.Black : BulletColor.White;
             var mode = Random.Range(0, 3);
             switch (mode)
             {
                 case 0:
-                    enemy.Init(hp,rate,speed,color);
+                    enemy.Init(hp, rate, speed, color);
                     break;
                 case 1:
-                    int rad = Random.Range(4,12);
+                    int rad = Random.Range(4, level + 12);
                     enemy.Init(hp, rate, speed, color, rad);
                     break;
                 case 2:
-                    int count = Random.Range(3, 5);
-                    float inter = 0.5f/rate;
-                    enemy.Init(hp, rate, speed, color,count, inter);
+                    int burstCount = Random.Range(3, level + 5);
+                    float inter = 0.5f / rate;
+                    enemy.Init(hp, rate, speed, color, burstCount, inter);
                     break;
                 default:
                     break;
             }
-            
-            
-            Debug.Log("SpawnEnemy");
+
+
+            //Debug.Log("SpawnEnemy");
             yield return new WaitForSeconds(delay);
+            count++;
+            if (count > 10)
+            {
+                count = 0;
+                delay *= 0.7f;
+                level++;
+            }
         }
     }
     /// <summary>
-    /// ½Ã°£À» ¸ØÃß´Â ÇÔ¼ö(ÀÏ½ÃÁ¤Áö ¿É¼Ç ¶Ç´Â °ÔÀÓ Á¾·á ½Ã »ç¿ë)
+    /// TimeScale ì •ì§€
     /// </summary>
-    /// <param name="isPause">true´Â Á¤Áö, false´Â Àç»ı</param>
+    /// <param name="isPause">true : ì •ì§€, false : ì¬ìƒ</param>
     public static void PauseTime(bool isPause)
     {
         if (isPause)
@@ -128,7 +154,7 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// ÇöÀç ½ºÅ×ÀÌÁö Á¤º¸(½ºÅ×ÀÌÁö ·¹º§, Á¡¼ö, ½Ã°£) ÀúÀå
+    /// Data.jsonì— í”Œë ˆì´ì–´ ë°ì´í„° ì €ì¥
     /// </summary>
     public void SaveStageData()
     {
@@ -146,15 +172,17 @@ public class GameManager : Singleton<GameManager>
     }
 
     /// <summary>
-    /// ½ºÅ×ÀÌÁö Á¾·á ÇÔ¼ö(ÇÃ·¹ÀÌ¾î »ç¸Á ½Ã È£Ãâ)
+    /// ê²Œì„ ì¢…ë£Œ í˜¸ì¶œ 
     /// </summary>
     public void GameEnd()
     {
-        Debug.Log("GameEnd");
+        //Debug.Log("GameEnd");
 
         StopAllCoroutines();
 
         SaveStageData();
+
+        OnStageEnd?.Invoke();
 
         StartCoroutine(EndCoroutine());
     }
@@ -163,9 +191,7 @@ public class GameManager : Singleton<GameManager>
     {
         yield return new WaitForSeconds(3f);
 
-        //UI¿¡¼­ ÀÌ ÀÌº¥Æ®¿¡ ½ºÅ×ÀÌÁö Á¾·á UI Ç¥½Ã ¼³Á¤
-        OnStageEnd?.Invoke();
-        //UI Ç¥½Ã ¹× ·¹º§ È­¸éÀ¸·Î ÀÌµ¿
+
 
         PauseTime(true);
     }

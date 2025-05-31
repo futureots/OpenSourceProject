@@ -257,6 +257,9 @@ MonoBehaviour:
   bulletDamage: 1
   bulletCooldown: 0.2
   explosionEffect: {fileID: 609406308895504931, guid: 0cf323a9572c404e8967837546721593, type: 3}
+  fireSound: {fileID: 8300000, guid: 7821d11a42eae4b839cc23092fd00c9f, type: 3}
+  hitSound: {fileID: 8300000, guid: 902828a83676948b2a085a2c006596fd, type: 3}
+  deathSound: {fileID: 8300000, guid: 4c252763483a141c2b8f44d80134f8e8, type: 3}
 --- !u!50 &1410205831727931075
 Rigidbody2D:
   serializedVersion: 5

@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using BulletSystem;
+using ItemSystem;
 
 /// <summary>
 /// 적의 동작과 상태를 관리하는 클래스입니다.
@@ -59,6 +60,10 @@ public class Enemy : MonoBehaviour, IBulletHitAble
 
     /// <summary>폭발 이펙트</summary>
     public GameObject explosionEffect;
+
+    [Header("Audio Settings")]
+    [SerializeField] private AudioClip hitSound; // 피격 사운드
+    [SerializeField] private AudioClip deathSound; // 사망 사운드
     #endregion
 
     #region Unity Methods
@@ -209,6 +214,8 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     {
         if (!isAlive) return;
         ApplyDamage(damage);
+
+        AudioManager.PlaySound(hitSound);
     }
 
     #endregion
@@ -240,13 +247,26 @@ public class Enemy : MonoBehaviour, IBulletHitAble
     {
         isAlive = false;
         GameManager.Instance.AddPoint(scoreValue);
-        
-        //사망 이펙트 생성
+
         var effect = Instantiate(explosionEffect, transform.position, Quaternion.identity);
         Destroy(effect, 0.5f);
 
+        // 30% 확률로 아이템을 소환한다.
+        const float spawnChance = 0.3f;
+        if (Random.value < spawnChance)
+        {
+            ItemInfo itemToSpawn = GameManager.Instance.GetRandomItemInfo();
+            if (itemToSpawn != null)
+            {
+                ItemManager.SummonItem(itemToSpawn, transform.position);
+            }
+        }
+
         Destroy(gameObject);
+
+        AudioManager.PlaySound(deathSound);
     }
+
 
     #endregion
 }

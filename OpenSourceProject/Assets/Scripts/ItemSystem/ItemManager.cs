@@ -1,4 +1,5 @@
 using UnityEngine;
+using BulletSystem;
 
 namespace ItemSystem
 {
@@ -54,20 +55,68 @@ namespace ItemSystem
 
             switch (itemInfo.ItemID)
             {
-                case 0:
-                    // 예시: 플레이어의 체력을 회복하는 아이템
-                    player.ChangeHp(1);
+                case 0: player.ChangeHp(1); break;
+                case 1: BulletManager.ClearAllBullets(); break;
+                case 2: player.ApplyRapidFireBuff(5f, 2f); break;
+                case 3: player.ApplyDamageBuff(5f, 2f); break;
+                case 4: player.ApplyAnyColorBuff(5f); break;
+                case 5:
+                    int extra = Random.Range(1, Mathf.CeilToInt(GameManager.Instance.time));
+                    GameManager.Instance.AddPoint(extra);
                     break;
+                default: Debug.LogWarning($"Unknown ItemID: {itemInfo.ItemID}"); break;
             }
 
+
         }
 
-        [ContextMenu("Spawn Item")]
-        public void DebugItemSpawn()
+        [ContextMenu("Spawn Item HP")]
+        public void DebugItemSpawnHp()
         {            
             Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0);
-            SummonItem("TestItem", spawnPosition);
+            SummonItem("Item_HP", spawnPosition);
             Debug.Log($"Spawned item at {spawnPosition}");
         }
+        
+        [ContextMenu("Spawn Item Clear")]
+        public void DebugItemSpawnClear()
+        {            
+            Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0);
+            SummonItem("Item_Clear", spawnPosition);
+            Debug.Log($"Spawned item at {spawnPosition}");
+        }
+        
+        [ContextMenu("Spawn Item Rapid")]
+        public void DebugItemSpawnRapid()
+        {            
+            Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0);
+            SummonItem("Item_Rapid", spawnPosition);
+            Debug.Log($"Spawned item at {spawnPosition}");
+        }
+        
+        [ContextMenu("Spawn Item Damage")]
+        public void DebugItemSpawnDamage()
+        {            
+            Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0);
+            SummonItem("Item_Damage", spawnPosition);
+            Debug.Log($"Spawned item at {spawnPosition}");
+        }
+        
+        [ContextMenu("Spawn Item AnyColor")]
+        public void DebugItemSpawnAnyColor()
+        {            
+            Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0);
+            SummonItem("Item_AnyColor", spawnPosition);
+            Debug.Log($"Spawned item at {spawnPosition}");
+        }
+        
+        [ContextMenu("Spawn Item Point")]
+        public void DebugItemSpawnPoint()
+        {            
+            Vector3 spawnPosition = new Vector3(Random.Range(-5f, 5f), Random.Range(-5f, 5f), 0);
+            SummonItem("Item_Point", spawnPosition);
+            Debug.Log($"Spawned item at {spawnPosition}");
+        }
+
     }
 }
