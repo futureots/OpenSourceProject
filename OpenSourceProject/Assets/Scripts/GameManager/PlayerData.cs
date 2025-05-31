@@ -37,7 +37,7 @@ public class PlayerData
         string path = Path.Combine(Application.dataPath + "/Data", fileName + ".Json");
         File.WriteAllText(path, data);
         Debug.Log(data);
-        Debug.Log("Save");
+        //Debug.Log("Save");
     }
     public static PlayerData LoadPlayerData(string fileName)
     {

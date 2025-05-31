@@ -162,7 +162,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     {
         if (context.started)
         {
-            Debug.Log("좌클릭!");
+            //Debug.Log("좌클릭!");
             //spriteRd.color = Color.white;
             spriteRenderer.SetColor(BulletColor.White);
             playerColor = BulletColor.White;
@@ -177,7 +177,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     {
         if (context.started)
         {
-            Debug.Log("우클릭!");
+            //Debug.Log("우클릭!");
             //spriteRd.color = Color.black;
             spriteRenderer.SetColor(BulletColor.Black);
             playerColor = BulletColor.Black;
@@ -208,7 +208,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     /// <param name="bullet"></param>
     public void Hit(float damage, Bullet bullet)
     {
-        Debug.Log("Hit!!");
+        //Debug.Log("Hit!!");
 
         // 플레이어는 총알의 데미지와 관계없이 항상 1데미지만 받음
         ChangeHp(-1);
@@ -241,8 +241,9 @@ public class Player : MonoBehaviour, IBulletHitAble
             return true;
 
         // 3) 무적 상태 중 ‘적의 다른 색’ 총알은 무시
-        if (isInvincible
-            && bullet.bulletLaunchSource != null 
+        if (isInvincible) return false;
+        if(
+            bullet.bulletLaunchSource != null 
             && bullet.bulletLaunchSource.CompareTag("ENEMY") 
             && color != playerColor)
         {
@@ -276,7 +277,7 @@ public class Player : MonoBehaviour, IBulletHitAble
     /// </summary>
     private void PlayerDie()
     {
-        Debug.Log("OMG Die!!");
+        //Debug.Log("OMG Die!!");
         //spriteRd.color = Color.red; //TMP!
 
         GetComponent<PlayerInput>().enabled = false;

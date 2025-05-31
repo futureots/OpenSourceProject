@@ -24,22 +24,22 @@ public class BtnHandler : MonoBehaviour
         switch (currentType)
         {
             case BtnType.GoLevelScene:
-                Debug.Log("LevelTestScene 전환");
+                //Debug.Log("LevelTestScene 전환");
                 SceneManager.LoadScene("LevelTestScene");
                 break;
 
             case BtnType.GoMainScene:
-                Debug.Log("MainTestScene 전환");
+                //Debug.Log("MainTestScene 전환");
                 SceneManager.LoadScene("MainTestScene");
                 break;
 
             case BtnType.GoBattleScene:
-                Debug.Log("AssetTestScene 전환");
+                //Debug.Log("AssetTestScene 전환");
                 SceneManager.LoadScene("AssetTestScene");
                 break;
 
             case BtnType.Exit:
-                Debug.Log("게임종료");
+                //Debug.Log("게임종료");
                 Application.Quit();
                 break;
 

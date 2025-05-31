@@ -125,7 +125,7 @@ public class GameManager : Singleton<GameManager>
             }
 
 
-            Debug.Log("SpawnEnemy");
+            //Debug.Log("SpawnEnemy");
             yield return new WaitForSeconds(delay);
             count++;
             if (count > 10)
@@ -176,7 +176,7 @@ public class GameManager : Singleton<GameManager>
     /// </summary>
     public void GameEnd()
     {
-        Debug.Log("GameEnd");
+        //Debug.Log("GameEnd");
 
         StopAllCoroutines();
 

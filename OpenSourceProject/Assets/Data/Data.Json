@@ -1,1 +1,1 @@
-{"$type":"PlayerData, Assembly-CSharp","data":{"$type":"System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[StageData, Assembly-CSharp]], mscorlib","1":{"$type":"StageData, Assembly-CSharp","stage_point":20,"stage_time":11.218235}}}
+{"$type":"PlayerData, Assembly-CSharp","data":{"$type":"System.Collections.Generic.Dictionary`2[[System.Int32, mscorlib],[StageData, Assembly-CSharp]], mscorlib","1":{"$type":"StageData, Assembly-CSharp","stage_time":5.04891157}}}
